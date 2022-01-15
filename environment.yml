@@ -1,0 +1,67 @@
+name: skel_cnn
+channels:
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=main
+  - ca-certificates=2021.1.19=h06a4308_0
+  - certifi=2020.6.20=pyhd3eb1b0_3
+  - libedit=3.1.20191231=h14c3975_1
+  - libffi=3.2.1=hf484d3e_1007
+  - libgcc-ng=9.1.0=hdf63c60_0
+  - libstdcxx-ng=9.1.0=hdf63c60_0
+  - ncurses=6.2=he6710b0_1
+  - openssl=1.0.2u=h7b6447c_0
+  - python=3.5.4=hc3d631a_27
+  - readline=7.0=h7b6447c_5
+  - sqlite=3.33.0=h62c20be_0
+  - tk=8.6.10=hbc83047_0
+  - wheel=0.36.2=pyhd3eb1b0_0
+  - xz=5.2.5=h7b6447c_0
+  - zlib=1.2.11=h7b6447c_3
+  - pip:
+    - absl-py==0.11.0
+    - astor==0.8.1
+    - bleach==1.5.0
+    - cycler==0.10.0
+    - cython==0.29.21
+    - decorator==4.4.2
+    - gast==0.4.0
+    - google-pasta==0.2.0
+    - grpcio==1.35.0
+    - h5py==2.10.0
+    - html5lib==0.9999999
+    - imagecodecs==2019.12.31
+    - imagecodecs-lite==2020.1.31
+    - imageio==2.9.0
+    - importlib-metadata==2.1.1
+    - keras==2.0.8
+    - keras-applications==1.0.8
+    - keras-preprocessing==1.1.2
+    - kiwisolver==1.1.0
+    - markdown==3.2.2
+    - matplotlib==3.0.3
+    - networkx==2.4
+    - numpy==1.16.6
+    - opencv-python==4.4.0.42
+    - pillow==7.2.0
+    - pip==20.3.4
+    - protobuf==3.14.0
+    - pyparsing==2.4.7
+    - python-dateutil==2.8.1
+    - pywavelets==1.1.1
+    - pyyaml==5.3.1
+    - scikit-image==0.15.0
+    - scipy==1.4.1
+    - setuptools==50.3.2
+    - six==1.15.0
+    - tensorboard==1.14.0
+    - tensorflow-estimator==1.14.0
+    - tensorflow-gpu==1.14.0
+    - termcolor==1.1.0
+    - tifffile==2019.7.26.2
+    - tqdm==4.61.2
+    - werkzeug==1.0.1
+    - wrapt==1.12.1
+    - zipp==1.2.0
+prefix: /storage/home/hcoda1/0/schaudhary9/.conda/envs/skel_cnn
+
