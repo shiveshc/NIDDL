@@ -51,7 +51,7 @@ if __name__ == '__main__':
         all_gt_img_data, all_noisy_data = load_data(paths, all_gt_img_data, all_noisy_data)
 
     # prepare training data
-    train_gt_img_data, train_noisy_data = prepare_training_data(all_gt_img_data, all_noisy_data, depth)
+    train_gt_img_data, train_noisy_data = prepare_training_data(all_gt_img_data, all_noisy_data, depth, mode)
 
     # split data into patches
     # train_gt_img_data_patch, train_noisy_img_data_patch = to_patches(train_gt_img_data, train_noisy_data)
@@ -79,11 +79,7 @@ if __name__ == '__main__':
     x = tf.placeholder("float", [None, train_noisy_img_data_patch.shape[1], train_noisy_img_data_patch.shape[2], train_noisy_img_data_patch.shape[3]])
     y = tf.placeholder("float", [None, train_gt_img_data_patch.shape[1], train_gt_img_data_patch.shape[2], train_gt_img_data_patch.shape[3]])
     arch = get_cnn_arch_from_argin(arch_name)
-
-    if mode == '3D':
-        output_shape = y.shape[3]
-    else:
-        output_shape = 1
+    output_shape = y.shape[3]
     pred = arch.conv_net(x, output_shape)
 
     if loss == 'l1':

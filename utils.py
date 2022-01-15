@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-from cnn_archs import *
+from cnn_archs import unet_v, unet_v2, hourglass_wores, hourglass_wres
 
 def load_data(data_path, all_gt_img_data, all_noisy_data):
     gt_img_path = data_path + '/' + 'gt_imgs'
@@ -102,13 +102,16 @@ def get_depth_chunks_from_stack(img, depth):
     return depth_chunks_img
 
 
-def prepare_training_data(all_gt_img_data, all_noisy_img_data, depth):
+def prepare_training_data(all_gt_img_data, all_noisy_img_data, depth, mode):
     train_gt_img_data = []
     train_noisy_img_data = []
     for n in range(len(all_gt_img_data)):
         curr_gt_img = all_gt_img_data[n]
         curr_noisy_img = all_noisy_img_data[n]
-        depth_gt_img = get_depth_chunks_from_stack(curr_gt_img, 1)
+        if mode == '3D':
+            depth_gt_img = get_depth_chunks_from_stack(curr_gt_img, depth)
+        else:
+            depth_gt_img = get_depth_chunks_from_stack(curr_gt_img, 1)
         depth_noisy_img = get_depth_chunks_from_stack(curr_noisy_img, depth)
         train_gt_img_data.extend(depth_gt_img)
         train_noisy_img_data.extend(depth_noisy_img)
@@ -188,10 +191,6 @@ def get_cnn_arch_from_argin(name):
                 'unet_v': unet_v,
                 'unet_v2': unet_v2,
                 'hourglass_wres': hourglass_wres,
-                'hourglass_wores': hourglass_wores,
-                'unet_v_k5': unet_v_k5,
-                'hourglass_wres_k5': hourglass_wres_k5,
-                'unet_v_patch': unet_v_patch,
-                'hourglass_wres_patch': hourglass_wres_patch}
+                'hourglass_wores': hourglass_wores}
 
     return arch_dic[name]
