@@ -173,9 +173,20 @@ if __name__ == '__main__':
             temp_X = temp_X[np.newaxis, :, :, :]
             temp_Y = temp_Y[np.newaxis, :, :, :]
             temp_pred = sess.run(pred, feed_dict={x: temp_X, y: temp_Y})
-            cv2.imwrite(results_dir + '/X_' + str(temp_idx + 1) + '.png', temp_X[0, :, :, int((depth+1)/2-1)].astype(np.uint16)) # this is the middle zplane corresponding to gt zplane
-            cv2.imwrite(results_dir + '/Y_' + str(temp_idx + 1) + '.png', temp_Y[0, :, :, 0].astype(np.uint16))
-            cv2.imwrite(results_dir + '/pred_' + str(temp_idx + 1) + '.png', temp_pred[0, :, :, 0].astype(np.uint16))
+            if mode == '2D':
+                cv2.imwrite(results_dir + '/X_' + str(temp_idx + 1) + '.png', temp_X[0, :, :, 0].astype(np.uint16))  # this is the middle zplane corresponding to gt zplane
+                cv2.imwrite(results_dir + '/Y_' + str(temp_idx + 1) + '.png', temp_Y[0, :, :, 0].astype(np.uint16))
+                cv2.imwrite(results_dir + '/pred_' + str(temp_idx + 1) + '.png', temp_pred[0, :, :, 0].astype(np.uint16))
+            elif mode == '2.5D':
+                cv2.imwrite(results_dir + '/X_' + str(temp_idx + 1) + '.png', temp_X[0, :, :, int((depth + 1) / 2 - 1)].astype(np.uint16))  # this is the middle zplane corresponding to gt zplane
+                cv2.imwrite(results_dir + '/Y_' + str(temp_idx + 1) + '.png', temp_Y[0, :, :, 0].astype(np.uint16))
+                cv2.imwrite(results_dir + '/pred_' + str(temp_idx + 1) + '.png', temp_pred[0, :, :, 0].astype(np.uint16))
+            elif mode == '3D':
+                os.mkdir(results_dir + '/img_' + str(temp_idx + 1))
+                for z in range(temp_pred.shape[3]):
+                    cv2.imwrite(results_dir + '/img_' + str(temp_idx + 1) + '/X_z' + str(z + 1) + '.png', temp_X[0, :, :, z].astype(np.uint16))  # this is the middle zplane corresponding to gt zplane
+                    cv2.imwrite(results_dir + '/img_' + str(temp_idx + 1) + '/Y_z' + str(z + 1) + '.png', temp_Y[0, :, :, z].astype(np.uint16))
+                    cv2.imwrite(results_dir + '/img_' + str(temp_idx + 1) + '/pred_z' + str(z + 1) + '.png', temp_pred[0, :, :, z].astype(np.uint16))
 
         # calculate accuracy on test data
         file = open(results_dir + '/test_data_loss.txt', 'a')
