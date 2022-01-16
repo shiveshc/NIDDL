@@ -8,7 +8,7 @@ Deep denoising pushes the limit of functional data acquisition by recovering hig
 <img src = "extra/wb_denoising.gif" width=100% align="center">
 <p align = "center">Fig.1 - 4K Mountains Wallpaper</p>
 
-Denoising whole-brain images
+<p align = "center">Denoising whole-brain images</p>
 <img src = "extra/wb_denoising.gif" width=100% align="center">
 
 # Installation
