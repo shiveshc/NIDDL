@@ -110,5 +110,5 @@ optional arguments:
   - batch size - `10`
   
  run following commands 
- `env\Scripts\activate.bat`
+ `env\Scripts\activate.bat`\
  `python train.py \training_data 1 -out \Results -arch unet_fixed -mode 2D -loss l1 -epoch 200 -bs 10`
