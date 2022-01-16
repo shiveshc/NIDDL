@@ -12,6 +12,8 @@ def parse_argument(arg_list):
 
     parser = argparse.ArgumentParser(prog='train.py', description= 'train CNN model to denoise volumetric functional recordings')
     parser.add_argument('data', help= 'training data path')
+    parser.add_argument('run', type=int, help='run number to distinguish different runs')
+    parser.add_argument('max_proj', choices= [1, 0], help= '1 if train network on max projection of 3D stacks else 0')
     parser.add_argument('-out', help= 'location for saving results')
     parser.add_argument('-arch', choices=['unet',
                                          'unet_fixed',
@@ -19,7 +21,6 @@ def parse_argument(arg_list):
                                          'hourglass_wores'], help= 'CNN architechture to use for training (default is hourglass_wres)', default= 'hourglass_wres')
     parser.add_argument('-mode', choices= ['2D', '2.5D', '3D'], help= 'training mode (default is 2D)', default= '2D')
     parser.add_argument('-depth', type= int, help= 'stack depth to use for training (must be odd number, default is 1)', default= 1)
-    parser.add_argument('run', type= int, help= 'run number to distinguish different runs')
     parser.add_argument('-loss', choices= ['l2', 'l1'], help= 'L2 or L1 loss for training (default is l1)', default= 'l1')
     parser.add_argument('-epochs', type= int, help= 'number of epochs to train the model for (150-200 is good choice, default is 150)', default= 150)
     parser.add_argument('-lr', type= float, help= 'learning rate (default is 0.001)', default= 0.001)
@@ -27,11 +28,12 @@ def parse_argument(arg_list):
     parser.add_argument('-tsize', help= 'data size (number of images) to use for training')
     args = parser.parse_args(arg_list)
     return args.data,\
+           args.run,\
+           args.max_proj, \
            args.out, \
            args.arch, \
            args.mode, \
            args.depth,\
-           args. run, \
            args.loss, \
            args.epochs,\
            args.lr, \
@@ -41,7 +43,7 @@ def parse_argument(arg_list):
 
 if __name__ == '__main__':
     # parse input
-    data_path, out_path, arch_name, mode, depth, run, loss, epochs, lr, bs, tsize = parse_argument(sys.argv[1:])
+    data_path, run, max_proj, out_path, arch_name, mode, depth, loss, epochs, lr, bs, tsize = parse_argument(sys.argv[1:])
     if mode == '2D':
         assert depth == 1, 'for 2D training mode, stack depth for training must be 1'
     else:
@@ -56,7 +58,11 @@ if __name__ == '__main__':
     all_gt_img_data = []
     all_noisy_data = []
     for paths in base_data_path:
-        all_gt_img_data, all_noisy_data = load_data(paths, all_gt_img_data, all_noisy_data)
+        if max_proj == 1:
+            all_gt_img_data, all_noisy_data = load_data_maxproj(paths, all_gt_img_data, all_noisy_data)
+        else:
+            all_gt_img_data, all_noisy_data = load_data(paths, all_gt_img_data, all_noisy_data)
+
 
     # prepare training data
     train_gt_img_data, train_noisy_data = prepare_training_data(all_gt_img_data, all_noisy_data, depth, mode)
@@ -139,14 +145,14 @@ if __name__ == '__main__':
             for k in range(5):
                 idx = [i for i in range(test_X.shape[0])]
                 random.shuffle(idx)
-                curr_loss = sess.run(cost, feed_dict={x: test_X[idx[:10], :, :, :], y: test_Y[idx[:10], :, :, :]})
+                curr_loss = sess.run(cost, feed_dict={x: test_X[idx[:min(10, test_X.shape[0])], :, :, :], y: test_Y[idx[:min(10, test_X.shape[0])], :, :, :]})
                 batch_test_loss.append(curr_loss)
 
             batch_train_loss = []
             for k in range(5):
                 idx = [i for i in range(train_X.shape[0])]
                 random.shuffle(idx)
-                curr_loss = sess.run(cost, feed_dict={x: train_X[idx[:10], :, :, :], y: train_Y[idx[:10], :, :, :]})
+                curr_loss = sess.run(cost, feed_dict={x: train_X[idx[:min(10, train_X.shape[0])], :, :, :], y: train_Y[idx[:min(10, train_X.shape[0])], :, :, :]})
                 batch_train_loss.append(curr_loss)
 
             mean_train_loss = sum(batch_train_loss) / len(batch_train_loss)
@@ -175,7 +181,7 @@ if __name__ == '__main__':
         file = open(results_dir + '/test_data_loss.txt', 'a')
         idx = [i for i in range(test_X.shape[0])]
         random.shuffle(idx)
-        for i in range(150):
+        for i in range(min(150, len(idx))):
             temp_X = test_X[idx[i], :, :, :]
             temp_Y = test_Y[idx[i], :, :, :]
             temp_X = temp_X[np.newaxis, :, :, :]
