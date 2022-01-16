@@ -27,8 +27,8 @@ Common installation errors -
     __solution :__ install suitable pip version
     
 # Additional system requirements
-Model training using GPUs is much faster and thus preferred. To be able to use GPUs, suitable NVIDIA drivers CUDA libraries must be installed. Additional instructions on setting up tensorflow-gpu can be found at <a href = "https://www.tensorflow.org/install/gpu#Software_requirements">software requirements</a> and <a href = "https://www.tensorflow.org/install/gpu#windows_setup">Windows setup</a>.
+Model training using GPUs is much faster and thus preferred. To be able to use GPUs, suitable NVIDIA drivers and CUDA libraries must be installed. Additional instructions on setting up tensorflow-gpu can be found at <a href = "https://www.tensorflow.org/install/gpu#Software_requirements">software requirements</a> and <a href = "https://www.tensorflow.org/install/gpu#windows_setup">Windows setup</a>.
 
-For tensorflow 1.6.0 currently setup in venv, CUDA v9.0 and cudnn-9.0-windows10-x64-v7.6.4.38 works for Windows 10 64-bit.
+For tensorflow 1.6.0 currently setup in venv, CUDA v9.0 and `cudnn-9.0-windows10-x64-v7.6.4.38` downloaded from <a href= "https://developer.nvidia.com/rdp/cudnn-archive">cudnn archives</a> works for Windows 10 64-bit.
     
 
