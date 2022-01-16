@@ -6,6 +6,7 @@ Installation steps tested for Windows10 and Python 3.5
 
 ### 1. Download whole-brain_DeepDenoising repository
 Open Git Bash terminal, navigate to desired location and clone repository using `git clone https://github.com/shiveshc/whole-brain_DeepDenoising.git`
+
 Or click on `Clone or download` button on top right corner and `Download ZIP`
 
 ### 2. Setting up venv and installing libraries
@@ -18,6 +19,7 @@ Next run following commands-
 4. `pip install -r requirements.txt`
 
 Installation should take 10-15 minutes.
+
 Common installation errors -
 1. pip version is not upgraded, 
     __solution :__ upgrade pip using `python -m pip install --upgrade pip`
