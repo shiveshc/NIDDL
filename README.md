@@ -5,10 +5,8 @@ Deep denoising pushes the limit of functional data acquisition by recovering hig
 |:--:| 
 | *Space* |
 
-<figure>
 <img src = "extra/wb_denoising.gif" width=100% align="center">
-<figcaption align = "center"><b>Fig.1 - 4K Mountains Wallpaper</b></figcaption>
-</figure>
+<p align = "center">Fig.1 - 4K Mountains Wallpaper</p>
 
 Denoising whole-brain images
 <img src = "extra/wb_denoising.gif" width=100% align="center">
