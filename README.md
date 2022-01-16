@@ -23,8 +23,7 @@ Installation should take 10-15 minutes.
 Common installation errors -
 1. pip version is not upgraded\
     __solution :__ upgrade pip using `python -m pip install --upgrade pip`
-2. pip version is not compatible with python version
-
+2. pip version is not compatible with python version\
     __solution :__ install suitable pip version
     
 # Additional system requirements
