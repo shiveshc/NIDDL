@@ -76,13 +76,15 @@ usage: train.py [-h] [-out OUT]
                 [-arch {unet,unet_fixed,hourglass_wres,hourglass_wores}]
                 [-mode {2D,2.5D,3D}] [-depth DEPTH] [-loss {l2,l1}]
                 [-epochs EPOCHS] [-lr LR] [-bs BS] [-tsize TSIZE]
-                data run
+                data run {1,0}
 
 train CNN model to denoise volumetric functional recordings
 
 positional arguments:
   data                  training data path
   run                   run number to distinguish different runs
+  {1,0}                 1 if train network on max projection of 3D stacks else
+                        0
 
 optional arguments:
   -h, --help            show this help message and exit
