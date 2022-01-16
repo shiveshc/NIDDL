@@ -41,37 +41,33 @@ data
 │   ├───img_1
 │   │       z_1.tif
 │   │       z_2.tif
-│   │       z_3.tif
 │   │       ...
 │   │
 │   ├───img_2
 │   │       z_1.tif
 │   │       z_2.tif
-│   │       z_3.tif
 │   │       ...
 │   │
 │   └───img_3
 │           z_1.tif
 │           z_2.tif
-│           z_3.tif
 │           ...
 │
 └───noisy_imgs
     ├───img_1
     │       z_1.tif
     │       z_2.tif
-    │       z_3.tif
     │       ...
     │
     ├───img_2
     │       z_1.tif
     │       z_2.tif
-    │       z_3.tif
     │       ...
     │
     └───img_3
             z_1.tif
             z_2.tif
-            z_3.tif
             ...
  ```
+ 
+ 1. 
