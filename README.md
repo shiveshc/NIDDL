@@ -24,7 +24,7 @@ Common installation errors -
 1. pip version is not upgraded\
     __solution :__ upgrade pip using `python -m pip install --upgrade pip`
 2. pip version is not compatible with python version\
-    __solution :__ install suitable pip version
+    __solution :__ install suitable pip version e.g. pip version < 21.0 is compatible with Python 3.5.
     
 # Additional system requirements
 Model training using GPUs is much faster and thus preferred. To be able to use GPUs, suitable NVIDIA drivers and CUDA libraries must be installed. Additional instructions on setting up tensorflow-gpu can be found at <a href = "https://www.tensorflow.org/install/gpu#Software_requirements">software requirements</a> and <a href = "https://www.tensorflow.org/install/gpu#windows_setup">Windows setup</a>.
