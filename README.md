@@ -30,5 +30,46 @@ Common installation errors -
 Model training using GPUs is much faster and thus preferred. To be able to use GPUs, suitable NVIDIA drivers and CUDA libraries must be installed. Additional instructions on setting up tensorflow-gpu can be found at <a href = "https://www.tensorflow.org/install/gpu#Software_requirements">software requirements</a> and <a href = "https://www.tensorflow.org/install/gpu#windows_setup">Windows setup</a>.
 
 For tensorflow 1.6.0 currently setup in venv, CUDA v9.0 and `cudnn-9.0-windows10-x64-v7.6.4.38` downloaded from <a href= "https://developer.nvidia.com/rdp/cudnn-archive">cudnn archives</a> works for Windows 10 64-bit.
-    
 
+# Train on new dataset
+To train network on new data, pairs of noisy (low SNR) images (acquired at low laser power or small exposure time conditions) and clean (High SNR) images (acquired at high laser power or long exposure time conditions) are needed. Currently supported image size is 512 x 512 x d where d is number of images in stack. For other images sizes, either resize images or images dimensions need to be changed in architecture files in `cnn_archs` folder.
+
+Structure of data folder should be as provided below -
+data
+├───gt_imgs
+│   ├───img_1
+│   │       z_1.tif
+│   │       z_2.tif
+│   │       z_3.tif
+│   │       ...
+│   │
+│   ├───img_2
+│   │       z_1.tif
+│   │       z_2.tif
+│   │       z_3.tif
+│   │       ...
+│   │
+│   └───img_3
+│           z_1.tif
+│           z_2.tif
+│           z_3.tif
+│           ...
+│
+└───noisy_imgs
+    ├───img_1
+    │       z_1.tif
+    │       z_2.tif
+    │       z_3.tif
+    │       ...
+    │
+    ├───img_2
+    │       z_1.tif
+    │       z_2.tif
+    │       z_3.tif
+    │       ...
+    │
+    └───img_3
+            z_1.tif
+            z_2.tif
+            z_3.tif
+            ...
