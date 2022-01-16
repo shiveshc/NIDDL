@@ -35,6 +35,7 @@ For tensorflow 1.6.0 currently setup in venv, CUDA v9.0 and `cudnn-9.0-windows10
 To train network on new data, pairs of noisy (low SNR) images (acquired at low laser power or small exposure time conditions) and clean (High SNR) images (acquired at high laser power or long exposure time conditions) are needed. Currently supported image size is 512 x 512 x d where d is number of images in stack. For other images sizes, either resize images or images dimensions need to be changed in architecture files in `cnn_archs` folder.
 
 Structure of data folder should be as provided below -
+```
 data
 ├───gt_imgs
 │   ├───img_1
@@ -73,3 +74,4 @@ data
             z_2.tif
             z_3.tif
             ...
+ ```
