@@ -27,7 +27,7 @@ Common installation errors -
     __solution :__ install suitable pip version e.g. pip version < 21.0 is compatible with Python 3.5.
     
 # Additional system requirements
-Model training using GPUs is much faster and thus preferred. To be able to use GPUs, suitable NVIDIA drivers and CUDA libraries must be installed. Additional instructions on setting up tensorflow-gpu can be found at <a href = "https://www.tensorflow.org/install/gpu#Software_requirements">software requirements</a> and <a href = "https://www.tensorflow.org/install/gpu#windows_setup">Windows setup</a>.
+Model training using GPUs is much faster and thus preferred. To be able to use GPUs, suitable NVIDIA drivers and CUDA libraries must be installed. Additional instructions on setting up tensorflow-gpu can be found at <a href = "https://www.tensorflow.org/install/gpu#Software_requirements">Software requirements</a> and <a href = "https://www.tensorflow.org/install/gpu#windows_setup">Windows setup</a>.
 
 For tensorflow 1.6.0 currently setup in venv, CUDA v9.0 and `cudnn-9.0-windows10-x64-v7.6.4.38` downloaded from <a href= "https://developer.nvidia.com/rdp/cudnn-archive">cudnn archives</a> works for Windows 10 64-bit.
 
@@ -72,7 +72,8 @@ data
  
  3. Run `python train.py -h` to see usage and input arguments. The output on terminal should look like
  ```
- usage: train.py [-h] [-arch {unet,unet_fixed,hourglass_wres,hourglass_wores}]
+usage: train.py [-h] [-out OUT]
+                [-arch {unet,unet_fixed,hourglass_wres,hourglass_wores}]
                 [-mode {2D,2.5D,3D}] [-depth DEPTH] [-loss {l2,l1}]
                 [-epochs EPOCHS] [-lr LR] [-bs BS] [-tsize TSIZE]
                 data run
@@ -85,6 +86,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  -out OUT              location for saving results
   -arch {unet,unet_fixed,hourglass_wres,hourglass_wores}
                         CNN architechture to use for training (default is
                         hourglass_wres)
@@ -98,3 +100,4 @@ optional arguments:
   -bs BS                batch size of training (default is 6)
   -tsize TSIZE          data size (number of images) to use for training
   ```
+  e.g. to train 
