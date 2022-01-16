@@ -111,7 +111,7 @@ optional arguments:
   e.g. to train the network on whole-brain data with following settings -
   - data path - `/training_data`
   - run number - `1`
-  - train on max-projection - `0`
+  - train on max-projection (e.g. ventral cord or neurite data) - `0`
   - out path - `Results`
   - architecture - `unet_fixed`
   - training mode - `2D`
