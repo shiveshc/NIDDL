@@ -16,7 +16,7 @@ Click on `Clone or download` button on top right corner and `Download ZIP`
 Navigate to the cloned directory /whole-brain-DeepDenoising and run following commands - 
 
 Using python virtual environment
-1. 'python -m venv env'
-2. 'env\Scripts\activate.bat'
-3. 'python -m pip install --upgrade "pip < 21.0"'
-4. 'pip install -r requirements.txt'
+1. `python -m venv env`
+2. `env\Scripts\activate.bat`
+3. `python -m pip install --upgrade "pip < 21.0"`
+4. `pip install -r requirements.txt`
