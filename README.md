@@ -101,9 +101,9 @@ optional arguments:
   -tsize TSIZE          data size (number of images) to use for training
   ```
   e.g. to train the network with following settings -
-  - data path - `\training_data`
+  - data path - `/training_data`
   - run number - `1`
-  - out path - `\Results`
+  - out path - `Results`
   - architecture - `unet_fixed`
   - training mode - `2D`
   - loss - `l1`
@@ -112,4 +112,37 @@ optional arguments:
   
  run following commands -\
  `env\Scripts\activate.bat`\
- `python train.py \training_data 1 -out \Results -arch unet_fixed -mode 2D -loss l1 -epoch 200 -bs 10`
+ `python train.py /training_data 1 -out Results -arch unet_fixed -mode 2D -loss l1 -epoch 200 -bs 10`
+ 
+ 4. Once training is finished a folder named `run_unet_fixed_l1_m2D_d1_1_[tsize]` will be created in `Results` folder. Output files in this folder should look like below (e.g. shown for a sample run)
+ ```
+Results
+└───run_unet_fixed_l1_m2D_d1_1_[tsize]
+        checkpoint
+        events.out.tfevents.1618996150.atl1-1-01-004-33.pace.gatech.edu
+        model.data-00000-of-00001
+        model.index
+        model.meta
+        pred_1999.png
+        pred_2180.png
+        pred_2227.png
+        pred_2492.png
+        pred_335.png
+        test_data_loss.txt
+        training_loss.txt
+        X_1999.png
+        X_2180.png
+        X_2227.png
+        X_2492.png
+        X_335.png
+        Y_1999.png
+        Y_2180.png
+        Y_2227.png
+        Y_2492.png
+        Y_335.png
+ ```
+Here - \
+`training_loss.txt` stores epoch wise loss information on randomly sampled images from training data and test data\
+`test_data_loss.txt` stores loss on randomly sampled images from test data\
+`checkpoint`, `events*` and `model*` files will be used to restore trained weights of network to perform inference on new data\
+`X*.png`, `Y*.png` denote randomly selected noisy (input) and clean (ground-truth) images from test data. `pred*.png` denote corresponding denoised predictions by trained network.
