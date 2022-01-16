@@ -32,9 +32,9 @@ Model training using GPUs is much faster and thus preferred. To be able to use G
 For tensorflow 1.6.0 currently setup in venv, CUDA v9.0 and `cudnn-9.0-windows10-x64-v7.6.4.38` downloaded from <a href= "https://developer.nvidia.com/rdp/cudnn-archive">cudnn archives</a> works for Windows 10 64-bit.
 
 # Train on new dataset
-To train network on new data, pairs of noisy (low SNR) images (acquired at low laser power or small exposure time conditions) and clean (High SNR) images (acquired at high laser power or long exposure time conditions) are needed. Currently supported image size is 512 x 512 x d where d is number of images in stack. For other images sizes, either resize images or images dimensions need to be changed in architecture files in `cnn_archs` folder.
+1. To train network on new data, pairs of noisy i.e. low SNR images (acquired at low laser power or small exposure time conditions) and clean i.e. High SNR images (acquired at high laser power or long exposure time conditions) are needed. Currently supported image size is 512 x 512 x d where d is number of images in stack. For other image sizes, either resize images first or channels dimensions need to be changed in architecture files in `cnn_archs` folder.
 
-Structure of data folder should be as provided below -
+2. Structure of training data folder should be organised as provided below -
 ```
 data
 ├───gt_imgs
@@ -70,4 +70,31 @@ data
             ...
  ```
  
- 1. 
+ 3. Run `python train.py -h` to see usage and input arguments. The output on terminal should look like
+ ```
+ usage: train.py [-h] [-arch {unet,unet_fixed,hourglass_wres,hourglass_wores}]
+                [-mode {2D,2.5D,3D}] [-depth DEPTH] [-loss {l2,l1}]
+                [-epochs EPOCHS] [-lr LR] [-bs BS] [-tsize TSIZE]
+                data run
+
+train CNN model to denoise volumetric functional recordings
+
+positional arguments:
+  data                  training data path
+  run                   run number to distinguish different runs
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -arch {unet,unet_fixed,hourglass_wres,hourglass_wores}
+                        CNN architechture to use for training (default is
+                        hourglass_wres)
+  -mode {2D,2.5D,3D}    training mode (default is 2D)
+  -depth DEPTH          stack depth to use for training (must be odd number,
+                        default is 1)
+  -loss {l2,l1}         L2 or L1 loss for training (default is l1)
+  -epochs EPOCHS        number of epochs to train the model for (150-200 is
+                        good choice, default is 150)
+  -lr LR                learning rate (default is 0.001)
+  -bs BS                batch size of training (default is 6)
+  -tsize TSIZE          data size (number of images) to use for training
+  ```
