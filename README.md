@@ -102,11 +102,13 @@ optional arguments:
   ```
   e.g. to train the network with following settings-
   - data path - `\training_data`
-  - out path - '\Results`
+  - out path - `\Results`
   - architecture - `unet_fixed`
   - training mode - `2D`
   - loss - `l1`
   - number of training epochs - `200`
   - batch size - `10`
   
- run the following command `python train.py \training_data 1 -out \Results -arch unet_fixed -mode 2D -loss l1 -epoch 200 -bs 10`
+ run following commands 
+ `env\Scripts\activate.bat`
+ `python train.py \training_data 1 -out \Results -arch unet_fixed -mode 2D -loss l1 -epoch 200 -bs 10`
