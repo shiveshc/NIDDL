@@ -1,15 +1,11 @@
 # whole-brain_DeepDenoising
 Deep denoising pushes the limit of functional data acquisition by recovering high SNR calcium traces from low SNR videos acquired using low laser power or smaller exposure time. Thus deep denoising enables faster and longer volumetric recordings.
 
-| ![space-1.jpg](extra/wb_denoising.gif) | 
-|:--:| 
-| *Space* |
-
+<p align = "center">Denoise whole-brain images</p>
 <img src = "extra/wb_denoising.gif" width=100% align="center">
-<p align = "center">Fig.1 - 4K Mountains Wallpaper</p>
 
-<p align = "center">Denoising whole-brain images</p>
-<img src = "extra/wb_denoising.gif" width=100% align="center">
+<p align = "center">Denoise neurites images</p>
+<img src = "extra/neurite_denoising.gif" width=100% align="center">
 
 # Installation
 Installation steps tested for Windows 10 64-bit and Python 3.5
