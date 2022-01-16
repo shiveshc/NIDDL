@@ -102,6 +102,7 @@ optional arguments:
   ```
   e.g. to train the network with following settings -
   - data path - `\training_data`
+  - run number - `1`
   - out path - `\Results`
   - architecture - `unet_fixed`
   - training mode - `2D`
