@@ -38,7 +38,7 @@ Model training using GPUs is much faster and thus preferred. To be able to use G
 For tensorflow 1.6.0 currently setup in venv, CUDA v9.0 and `cudnn-9.0-windows10-x64-v7.6.4.38` downloaded from <a href= "https://developer.nvidia.com/rdp/cudnn-archive">cudnn archives</a> works for Windows 10 64-bit.
 
 # Train on new dataset
-1. To train network on new data, pairs of noisy i.e. low SNR images (acquired at low laser power or small exposure time conditions) and clean i.e. High SNR images (acquired at high laser power or long exposure time conditions) are needed. Currently supported image size is 512 x 512 x d where d is number of images in stack. For other image sizes, either resize images first or channels dimensions need to be changed in architecture files in `cnn_archs` folder.
+1. To train network on new data, pairs of noisy i.e. low SNR images (acquired at low laser power or small exposure time conditions) and clean i.e. high SNR images (acquired at high laser power or long exposure time conditions) are needed. Currently supported image size is 512 x 512 x d where d is number of images in stack. For other image sizes, either resize images first or channels dimensions need to be changed in architecture files in `cnn_archs` folder.
 
 2. Structure of training data folder should be organised as provided below -
 ```
@@ -120,6 +120,7 @@ optional arguments:
   - batch size - `10`
   
  run following commands -\
+ `cd .\whole-brain_DeepDenoising`
  `env\Scripts\activate.bat`\
  `python train.py /training_data 1 0 -out Results -arch unet_fixed -mode 2D -loss l1 -epoch 200 -bs 10`
  
