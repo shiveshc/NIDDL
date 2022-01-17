@@ -109,10 +109,10 @@ optional arguments:
   -tsize TSIZE          data size (number of images) to use for training
   ```
   e.g. to train the network on whole-brain data with following settings -
-  - data path - `/training_data`
+  - data path - `/training_data` (path should have forward slashes '/')
   - run number - `1`
   - train on max-projection (e.g. ventral cord or neurite data) - `0`
-  - out path - `Results`
+  - out path - `Results` (path should have forward slashes '/')
   - architecture - `unet_fixed`
   - training mode - `2D`
   - loss - `l1`
@@ -120,7 +120,7 @@ optional arguments:
   - batch size - `10`
   
  run following commands -\
- `cd .\whole-brain_DeepDenoising`
+ `cd .\whole-brain_DeepDenoising`\
  `env\Scripts\activate.bat`\
  `python train.py /training_data 1 0 -out Results -arch unet_fixed -mode 2D -loss l1 -epoch 200 -bs 10`
  
@@ -156,3 +156,10 @@ Here - \
 `test_data_loss.txt` stores loss on randomly sampled images from test data\
 `checkpoint`, `events*` and `model*` files will be used to restore trained weights of network to perform inference on new data\
 `X*.png`, `Y*.png` denote randomly selected noisy (input) and clean (ground-truth) images from test data. `pred*.png` denote corresponding denoised predictions by trained network.
+
+
+# Denoise new calcium activity recordings or individual images
+1. To denoise functional recording datasets using trained networks run the following commands - \
+`cd .\whole-brain_DeepDenoising`\
+`env\Scripts\activate.bat`\
+`python inference.py /vid1 /vid2 /Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`\
