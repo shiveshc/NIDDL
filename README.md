@@ -47,7 +47,7 @@ For tensorflow 1.6.0 currently setup in venv, CUDA v9.0 and `cudnn-9.0-windows10
 # Train on new dataset
 1. To train network on new data, pairs of noisy i.e. low SNR images (acquired at low laser power or small exposure time conditions) and clean i.e. high SNR images (acquired at high laser power or long exposure time conditions) are needed. Currently supported image size is 512 x 512 x d where d is number of images in stack. For other image sizes, either resize images first or channel dimensions need to be changed in architecture files in `cnn_archs` folder.
 
-2. Structure of training data folder should be organised as provided below -
+2. Structure of training data folder should be organised as below -
 ```
 data
 ├───gt_imgs
@@ -211,7 +211,7 @@ run following commands - \
 
 __Note :__ to denoise max-projection calcium imaging datasets, folder structure of input dataset should remain same. In this case, use a network trained on max-projection images to denoise e.g. `Results/run_hourglass_wres_l1_mp1_m2D_d1_1_[tsize]` (here mp1 in run name denotes network was trained on max-projection images).
 
-3. Once denoising is finished, output folders `/vid1/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` and `/vid2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` will be created. Output files in these folders should like below -
+3. Once denoising is finished, output folders `/vid1/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` and `/vid2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` will be created. Output files in these folders should look like below -
 ```
 /vid1/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]
 │   run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_inference_runtime.txt
@@ -245,7 +245,7 @@ run following commands - \
 `env\Scripts\activate.bat`\
 `python inference.py data1/img_1.tif data2/img_2.png data2/img_3.png Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
 
-2. Once denoising is finished, output folders `data1/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_1.tif`, `data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_2.png` and `data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_3.png` will be created. Output files in these folders should like below -
+2. Once denoising is finished, output folders `data1/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_1.tif`, `data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_2.png` and `data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_3.png` will be created. Output files in these folders should look like below -
 ```
 data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_2.png
     run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_inference_runtime.txt
