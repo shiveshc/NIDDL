@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import random
 from cnn_archs import unet_v, unet_v2, hourglass_wores, hourglass_wres
 
-def load_data(data_path, all_gt_img_data, all_noisy_data):
+def load_data(data_path, all_gt_img_data, all_noisy_data, max_proj):
     gt_img_path = data_path + '/' + 'gt_imgs'
     noisy_img_path = data_path + '/' + 'noisy_imgs'
 
@@ -33,42 +33,9 @@ def load_data(data_path, all_gt_img_data, all_noisy_data):
         curr_img_noisy = np.array(curr_img_noisy)
         curr_img_gt = np.transpose(curr_img_gt, axes=(1, 2, 0))
         curr_img_noisy = np.transpose(curr_img_noisy, axes=(1, 2, 0))
-        all_gt_img_data.append(curr_img_gt)
-        all_noisy_data.append(curr_img_noisy)
-
-    return all_gt_img_data, all_noisy_data
-
-
-def load_data_maxproj(data_path, all_gt_img_data, all_noisy_data):
-    gt_img_path = data_path + '/' + 'gt_imgs'
-    noisy_img_path = data_path + '/' + 'noisy_imgs'
-
-    stack_list = os.listdir(gt_img_path)
-    stack_num = [int(stack[4:]) for stack in stack_list]
-    num_stacks = max(stack_num)
-
-    for stack in range(1, num_stacks + 1):
-        curr_img_gt = []
-        stack_path_gt = gt_img_path + '/img_' + str(stack)
-        curr_img_noisy = []
-        stack_path_noisy = noisy_img_path + '/img_' + str(stack)
-
-        zplane_list = os.listdir(stack_path_gt)
-        zplane_num = [int(zplane[2:len(zplane) - 4]) for zplane in zplane_list]
-        max_zplane_num = max(zplane_num)
-        for num in range(max_zplane_num):
-            curr_gt_z = cv2.imread(stack_path_gt + '/z_' + str(num + 1) + '.tif', -1)
-            curr_img_gt.append(curr_gt_z)
-
-            curr_noisy_z = cv2.imread(stack_path_noisy + '/z_' + str(num + 1) + '.tif', -1)
-            curr_img_noisy.append(curr_noisy_z)
-
-        curr_img_gt = np.array(curr_img_gt)
-        curr_img_noisy = np.array(curr_img_noisy)
-        curr_img_gt = np.transpose(curr_img_gt, axes=(1, 2, 0))
-        curr_img_noisy = np.transpose(curr_img_noisy, axes=(1, 2, 0))
-        curr_img_gt = np.amax(curr_img_gt, axis=2, keepdims= True)
-        curr_img_noisy = np.amax(curr_img_noisy, axis=2, keepdims= True)
+        if max_proj == 1:
+            curr_img_gt = np.amax(curr_img_gt, axis=2, keepdims=True)
+            curr_img_noisy = np.amax(curr_img_noisy, axis=2, keepdims=True)
         all_gt_img_data.append(curr_img_gt)
         all_noisy_data.append(curr_img_noisy)
 

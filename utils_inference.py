@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy as np
 
-def load_data(data_path):
+def load_data(data_path, max_proj):
     noisy_vid_path = data_path + '/' + 'noisy_imgs'
 
     all_noisy_data = []
@@ -22,38 +22,33 @@ def load_data(data_path):
 
         curr_noisy_img = np.array(curr_noisy_img)
         curr_noisy_img = np.transpose(curr_noisy_img, axes=(1, 2, 0))
+        if max_proj == 1:
+            curr_noisy_img = np.amax(curr_noisy_img, axis=2, keepdims=True)
         all_noisy_data.append(curr_noisy_img)
 
     all_noisy_data = np.array(all_noisy_data)
 
     return all_noisy_data
 
-def load_data_maxproj(data_path):
-    noisy_vid_path = data_path + '/' + 'noisy_imgs'
-
+def load_data_indiv_imgs(img, max_proj):
     all_noisy_data = []
+    all_img_name = []
+    all_img_path = []
 
-    img_list = os.listdir(noisy_vid_path)
-    img_num = [int(img[4:len(img)]) for img in img_list]
-    num_imgs = max(img_num)
-
-    for tp in range(1, num_imgs + 1):
-        curr_tp_noisy = []
-        tp_path = noisy_vid_path + '/img_' + str(tp)
-        zplane_list = os.listdir(tp_path)
-        zplane_num = [int(zplane[2:len(zplane) - 4]) for zplane in zplane_list]
-        num_zplanes = max(zplane_num)
-        for z in range(1, num_zplanes + 1):
-            curr_noisy_img = cv2.imread(tp_path + '/z_' + str(z) + '.tif', -1)
-            curr_tp_noisy.append(curr_noisy_img)
-
-        curr_tp_noisy = np.array(curr_tp_noisy)
-        curr_tp_noisy = np.transpose(curr_tp_noisy, axes= (1, 2, 0))
-        curr_tp_noisy = np.amax(curr_tp_noisy, axis= 2, keepdims= True)
-        all_noisy_data.append(curr_tp_noisy)
+    backslash_idx = [i for i, char in enumerate(img) if char == '/']
+    curr_img_path = img[:backslash_idx[-1]]
+    curr_img_name = img[backslash_idx[-1] + 1:len(img)]
+    curr_img = cv2.imread(img, -1)
+    if max_proj == 1:
+        if len(curr_img.shape) == 3:
+            curr_img = np.amax(curr_img, axis= 2, keepdims= True)
+    all_noisy_data.append(curr_img)
+    all_img_name.append(curr_img_name)
+    all_img_path.append(curr_img_path)
 
     all_noisy_data = np.array(all_noisy_data)
-    return all_noisy_data
+
+    return all_noisy_data, all_img_name
 
 def make_cnn_input_data(curr_tp, znum, depth):
     input_to_cnn = []
@@ -76,3 +71,40 @@ def make_cnn_input_data(curr_tp, znum, depth):
     input_to_cnn = np.array(input_to_cnn)
     input_to_cnn = np.transpose(input_to_cnn, axes=(1, 2, 0))
     return input_to_cnn
+
+def get_run_params(run_path):
+    slash_idx = [i for i, v in enumerate(run_path) if v == '/']
+    base_path_run = run_path[0:slash_idx[-1]]
+    run_name = run_path[slash_idx[-1] + 1::]
+
+    if 'mp0' in run_name:
+        max_proj = 0
+    elif 'mp1' in run_name:
+        max_proj = 1
+
+    if 'm2D' in run_name:
+        model_type = '2D'
+    elif 'm2.5D' in run_name:
+        model_type = '2.5D'
+    elif 'm3D' in run_name:
+        model_type = '3D'
+
+    if 'hourglass_wores_' in run_name:
+        arch_name = 'hourglass_wores'
+    elif 'hourglass_wres_' in run_name:
+        arch_name = 'hourglass_wres'
+    elif 'unet_v_' in run_name:
+        arch_name = 'unet_v'
+    elif 'unet_v2_' in run_name:
+        arch_name = 'unet_v2'
+    elif 'unet_' in run_name:
+        arch_name = 'unet'
+    elif 'unet_fixed_' in run_name:
+        arch_name = 'unet_fixed'
+
+    underscore_idx = [i for i, char in enumerate(run_name) if char == '_']
+    depth = run_name[underscore_idx[-3] + 2:underscore_idx[-2]]
+    run = run_name[underscore_idx[-2] + 1:underscore_idx[-1]]
+    tsize = run_name[underscore_idx[-1] + 1:]
+
+    return base_path_run, run_name, max_proj, model_type, arch_name, depth, run, tsize

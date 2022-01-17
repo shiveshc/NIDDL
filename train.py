@@ -13,7 +13,7 @@ def parse_argument(arg_list):
     parser = argparse.ArgumentParser(prog='train.py', description= 'train CNN model to denoise volumetric functional recordings')
     parser.add_argument('data', help= 'training data path')
     parser.add_argument('run', type=int, help='run number to distinguish different runs')
-    parser.add_argument('max_proj', choices= [1, 0], help= '1 if train network on max projection of 3D stacks else 0')
+    parser.add_argument('max_proj', choices= [1, 0], help= '1 if train network on max projection of 3D stacks else 0', default= 0)
     parser.add_argument('-out', help= 'location for saving results')
     parser.add_argument('-arch', choices=['unet',
                                          'unet_fixed',
@@ -44,6 +44,9 @@ def parse_argument(arg_list):
 if __name__ == '__main__':
     # parse input
     data_path, run, max_proj, out_path, arch_name, mode, depth, loss, epochs, lr, bs, tsize = parse_argument(sys.argv[1:])
+    if max_proj == 1:
+        assert mode == '2D', 'training model on max-projection images thus training mode should be 2D'
+
     if mode == '2D':
         assert depth == 1, 'for 2D training mode, stack depth for training must be 1'
     else:
@@ -52,27 +55,24 @@ if __name__ == '__main__':
     assert os.path.isdir(data_path), 'training data path does not exist'
 
 
-    # load data
+    ## load data
     # base_data_path = ['D:/Shivesh/Denoising/20210206_denoising_ZC392/cond_10ms110_10ms1000_v2']
     base_data_path = [data_path]
     all_gt_img_data = []
     all_noisy_data = []
     for paths in base_data_path:
-        if max_proj == 1:
-            all_gt_img_data, all_noisy_data = load_data_maxproj(paths, all_gt_img_data, all_noisy_data)
-        else:
-            all_gt_img_data, all_noisy_data = load_data(paths, all_gt_img_data, all_noisy_data)
+        all_gt_img_data, all_noisy_data = load_data(paths, all_gt_img_data, all_noisy_data, max_proj)
 
 
-    # prepare training data
+    ## prepare training data
     train_gt_img_data, train_noisy_data = prepare_training_data(all_gt_img_data, all_noisy_data, depth, mode)
 
-    # split data into patches
+    ## split data into patches
     # train_gt_img_data_patch, train_noisy_img_data_patch = to_patches(train_gt_img_data, train_noisy_data)
     train_gt_img_data_patch = train_gt_img_data
     train_noisy_img_data_patch = train_noisy_data
 
-    # subsample data based on tsize for training
+    ## subsample data based on tsize for training
     if tsize != None:
         # if tsize is specified, use tsize number of images as train and rest as test
         tsize = int(tsize)
@@ -85,7 +85,7 @@ if __name__ == '__main__':
         tsize = train_X.shape[0]
 
 
-    # define CNN model
+    ## define CNN model
     training_iters = epochs
     learning_rate = lr
     batch_size = bs
@@ -105,18 +105,18 @@ if __name__ == '__main__':
     init = tf.global_variables_initializer()
     saver = tf.train.Saver()
 
-    # make folder where all results will be saved
+    ## make folder where all results will be saved
     if out_path != None:
         if os.path.isdir(out_path) == False:
             os.mkdir(out_path)
-        results_dir = out_path + '/run_' + arch_name + '_' + loss + '_m' + mode + '_d' + str(depth) + '_' + str(run) + '_' + str(tsize)
+        results_dir = out_path + '/run_' + arch_name + '_' + loss + '_mp' + str(max_proj) + '_m' + mode + '_d' + str(depth) + '_' + str(run) + '_' + str(tsize)
     else:
-        results_dir = 'run_' + arch_name + '_' + loss + '_m' + mode + '_d' + str(depth) + '_' + str(run) + '_' + str(tsize)
+        results_dir = 'run_' + arch_name + '_' + loss + '_mp' + str(max_proj) + '_m' + mode + '_d' + str(depth) + '_' + str(run) + '_' + str(tsize)
     if os.path.isdir(results_dir):
         shutil.rmtree(results_dir)
     os.mkdir(results_dir)
 
-    # train model and save results
+    ## train model and save results
     with tf.Session() as sess:
         sess.run(init)
         train_loss = []
@@ -140,7 +140,7 @@ if __name__ == '__main__':
                 loss = sess.run(cost, feed_dict={x: batch_x, y: batch_y})
             toc = time.clock()
 
-            # Calculate accuracy of 10 test images, repeat 10 times and report mean
+            # Calculate accuracy of 10 test images, repeat 5 times and report mean
             batch_test_loss = []
             for k in range(5):
                 idx = [i for i in range(test_X.shape[0])]
@@ -148,6 +148,7 @@ if __name__ == '__main__':
                 curr_loss = sess.run(cost, feed_dict={x: test_X[idx[:min(10, test_X.shape[0])], :, :, :], y: test_Y[idx[:min(10, test_X.shape[0])], :, :, :]})
                 batch_test_loss.append(curr_loss)
 
+            # Calculate accuracy of 10 train images, repeat 5 times and report mean
             batch_train_loss = []
             for k in range(5):
                 idx = [i for i in range(train_X.shape[0])]
