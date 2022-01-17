@@ -7,6 +7,9 @@ Deep denoising pushes the limit of functional data acquisition by recovering hig
 <p align = "center"><b>Denoise neurites images</b></p>
 <img src = "extra/neurite_denoising.gif" width=100% align="center">
 
+<p align = "center"><b>Recover high SNR calcium traces</b></p>
+<img src = "extra/denoise_traces.png" width=100% align="center">
+
 # Contents
 1. [Installation](#installation)
 2. [Additional system requirements](#additional-system-requirements)
