@@ -25,7 +25,7 @@ def parse_argument(arg_list):
     parser.add_argument('-epochs', type= int, help= 'number of epochs to train the model for (150-200 is good choice, default is 150)', default= 150)
     parser.add_argument('-lr', type= float, help= 'learning rate (default is 0.001)', default= 0.001)
     parser.add_argument('-bs', type= int, help= 'batch size of training (default is 6)', default= 6)
-    parser.add_argument('-tsize', help= 'data size (number of images) to use for training')
+    parser.add_argument('-tsize', type= int, help= 'data size (number of images) to use for training')
     args = parser.parse_args(arg_list)
     return args.data,\
            args.run,\

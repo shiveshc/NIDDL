@@ -26,8 +26,6 @@ def load_data(data_path, max_proj):
             curr_noisy_img = np.amax(curr_noisy_img, axis=2, keepdims=True)
         all_noisy_data.append(curr_noisy_img)
 
-    all_noisy_data = np.array(all_noisy_data)
-
     return all_noisy_data
 
 def load_data_indiv_imgs(img, max_proj):
@@ -46,9 +44,7 @@ def load_data_indiv_imgs(img, max_proj):
     all_img_name.append(curr_img_name)
     all_img_path.append(curr_img_path)
 
-    all_noisy_data = np.array(all_noisy_data)
-
-    return all_noisy_data, all_img_name
+    return all_noisy_data, all_img_name, all_img_path
 
 def make_cnn_input_data(curr_tp, znum, depth):
     input_to_cnn = []
@@ -103,8 +99,8 @@ def get_run_params(run_path):
         arch_name = 'unet_fixed'
 
     underscore_idx = [i for i, char in enumerate(run_name) if char == '_']
-    depth = run_name[underscore_idx[-3] + 2:underscore_idx[-2]]
-    run = run_name[underscore_idx[-2] + 1:underscore_idx[-1]]
-    tsize = run_name[underscore_idx[-1] + 1:]
+    depth = int(run_name[underscore_idx[-3] + 2:underscore_idx[-2]])
+    run = int(run_name[underscore_idx[-2] + 1:underscore_idx[-1]])
+    tsize = int(run_name[underscore_idx[-1] + 1:])
 
     return base_path_run, run_name, max_proj, model_type, arch_name, depth, run, tsize
