@@ -120,7 +120,6 @@ optional arguments:
   - batch size - `10`
   
  run following commands -\
- `cd .\whole-brain_DeepDenoising`\
  `env\Scripts\activate.bat`\
  `python train.py /training_data 1 0 -out Results -arch unet_fixed -mode 2D -loss l1 -epoch 200 -bs 10`
  
@@ -159,7 +158,46 @@ Here - \
 
 
 # Denoise new calcium activity recordings or individual images
-1. To denoise functional recording datasets using trained networks run the following commands - \
-`cd .\whole-brain_DeepDenoising`\
+1. Structure of functional recording video datasets should be organised as below - 
+```
+vid1
+└───noisy_imgs
+    ├───img_1
+    │       z_1.tif
+    │       z_2.tif
+    │       ...
+    │
+    ├───img_2
+    │       z_1.tif
+    │       z_2.tif
+    │       ...
+    │
+    ├───img_3
+    │       z_1.tif
+    │       z_2.tif
+    │       ...
+    ...
+```
+Here `img_1`, `img_2` etc. can correspond to individual time-points in videos.
+
+2. Run `python inference.py -h` to see usage and input arguments. Output on terminal should look like below - 
+```
+usage: inference.py [-h] data [data ...] run
+
+denoise images using weights of trained model
+
+positional arguments:
+  data        paths of datasets to be denoised
+  run         path of saved trained model
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
+e.g to denoise two video datasets with following setting - 
+- two video datasets with paths - `/vid1`, `/vid2`
+- save trained network path - `Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
+
+run following commands - \
 `env\Scripts\activate.bat`\
 `python inference.py /vid1 /vid2 /Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`\
