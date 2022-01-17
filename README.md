@@ -4,7 +4,7 @@ Deep denoising pushes the limit of functional data acquisition by recovering hig
 <p align = "center"><b>Denoise whole-brain videos</b></p>
 <img src = "extra/wb_denoising.gif" width=100% align="center">
 
-<p align = "center"><b>Denoise neurites images<b></p>
+<p align = "center"><b>Denoise neurites images</b></p>
 <img src = "extra/neurite_denoising.gif" width=100% align="center">
 
 # Installation
