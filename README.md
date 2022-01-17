@@ -194,10 +194,35 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
-e.g to denoise two video datasets with following setting - 
+e.g to denoise two video datasets with following settings - 
 - two video datasets with paths - `/vid1`, `/vid2`
 - save trained network path - `Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
 
 run following commands - \
 `env\Scripts\activate.bat`\
-`python inference.py /vid1 /vid2 /Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`\
+`python inference.py /vid1 /vid2 /Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
+
+3. Once denoising is finished, output folders `/vid1/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` and `/vid2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` will be created. Output files in these folders should like below -
+```
+/vid1/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]
+│   run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_inference_runtime.txt
+│
+├───img_1
+│       z_1.tif
+│       z_2.tif
+│       ...
+│
+├───img_2
+│       z_1.tif
+│       z_2.tif
+│       ...
+│
+├───img_3
+│       z_1.tif
+│       z_2.tif
+│       ...
+...
+```
+Here - \
+`run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_inference_runtime.txt` stores inference runtime information for each image.\
+`img_1`, `img_2` etc. folders store denoised images corresponding to noisy video.
