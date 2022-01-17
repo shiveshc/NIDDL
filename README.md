@@ -195,8 +195,8 @@ optional arguments:
 ```
 
 e.g to denoise two video datasets with following settings - 
-- two video datasets with paths - `/vid1`, `/vid2`
-- save trained network path - `Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
+- two video datasets with paths - `/vid1`, `/vid2` (path should have forward slashes '/')
+- save trained network path - `Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` (path should have forward slashes '/')
 
 run following commands - \
 `env\Scripts\activate.bat`\
@@ -231,12 +231,12 @@ Here - \
 
 # Denoise independent images
 1. E.g. to denoise 3 individual images (may be 2D images or 3D stacks) with following settings - 
-- 3 images with paths - `data1/img_1.tif`, `data2/img_2.png`, `data2/img_3.png`
-- save trained network path - `Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
+- 3 images with paths - `data1/img_1.tif`, `data2/img_2.png`, `data2/img_3.png` (path should have forward slashes '/')
+- save trained network path - `Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` (path should have forward slashes '/')
 
 run following commands - \
 `env\Scripts\activate.bat`\
-`python inference.py data1/img_1.tif data2/img_2.png data2/img_3.png /Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
+`python inference.py data1/img_1.tif data2/img_2.png data2/img_3.png Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
 
 2. Once denoising is finished, output folders `data1/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_1.tif`, `data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_2.png` and `data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_3.png` will be created. Output files in these folders should like below -
 ```
