@@ -123,10 +123,10 @@ optional arguments:
  `env\Scripts\activate.bat`\
  `python train.py /training_data 1 0 -out Results -arch unet_fixed -mode 2D -loss l1 -epoch 200 -bs 10`
  
- 4. Once training is finished a folder named `run_unet_fixed_l1_m2D_d1_1_[tsize]` will be created in `Results` folder. Output files in this folder should look like below (e.g. shown for a sample run)
+ 4. Once training is finished a folder named `run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` will be created in `Results` folder. Output files in this folder should look like below (e.g. shown for a sample run)
  ```
 Results
-└───run_unet_fixed_l1_m2D_d1_1_[tsize]
+└───run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]
         checkpoint
         events.out.tfevents.1618996150.atl1-1-01-004-33.pace.gatech.edu
         model.data-00000-of-00001
