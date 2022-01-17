@@ -236,7 +236,7 @@ Here - \
 
 run following commands - \
 `env\Scripts\activate.bat`\
-`python inference.py data1/img_1.tif data2/img_2.tif data1/img_3.tif /Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
+`python inference.py data1/img_1.tif data2/img_2.png data2/img_3.png /Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
 
 2. Once denoising is finished, output folders `data1/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_1.tif`, `data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_2.png` and `data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_3.png` will be created. Output files in these folders should like below -
 ```
@@ -245,6 +245,6 @@ data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_2.png
     img_2.png.tif
 ```
 Here - \
-`run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_inference_runtime.txt` stores inference runtime information for image.
+`run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_inference_runtime.txt` stores inference runtime information for image.\
 `img_2.png.tif` is the denoised output corresponding to `data2/img_2.png`
 
