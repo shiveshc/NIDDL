@@ -7,6 +7,13 @@ Deep denoising pushes the limit of functional data acquisition by recovering hig
 <p align = "center"><b>Denoise neurites images</b></p>
 <img src = "extra/neurite_denoising.gif" width=100% align="center">
 
+# Contents
+1. [Installation](#installation)
+2. [Additional system requirements](#additional-system-requirements)
+3. [Train on new dataset](#train-on-new-dataset)
+4. [Denoise calcium activity recordings](#denoise-calcium-activity-recordings)
+5. [Denoise independent images](#denoise-independent-images)
+
 # Installation
 Installation steps tested for Windows 10 64-bit and Python 3.5
 
