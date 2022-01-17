@@ -11,12 +11,12 @@ Deep denoising pushes the limit of functional data acquisition by recovering hig
 Installation steps tested for Windows 10 64-bit and Python 3.5
 
 ### 1. Download whole-brain_DeepDenoising repository
-Open Git Bash terminal, navigate to desired location and clone repository using `git clone https://github.com/shiveshc/whole-brain_DeepDenoising.git`
+Open Git Bash terminal, navigate to desired location and clone repository using `git clone https://github.com/shiveshc/whole-brain_DeepDenoising.git`.
 
-Or click on `Code` button on top right corner and `Download ZIP`
+Or click on `Code` button on top right corner and `Download ZIP`.
 
 ### 2. Setting up venv and installing libraries
-Open command line terminal as administrator and navigate to cloned repository path using `cd .\whole-brain_DeepDenoising`
+Open command line terminal as administrator and navigate to cloned repository path using `cd .\whole-brain_DeepDenoising`.
 
 Next run following commands-
 1. `python -m venv env`
@@ -76,7 +76,7 @@ data
             ...
  ```
  
- 3. Run `python train.py -h` to see usage and input arguments. The output on terminal should look like
+ 3. Run `python train.py -h` to see usage and input arguments. The output on terminal should look like below -
  ```
 usage: train.py [-h] [-out OUT]
                 [-arch {unet,unet_fixed,hourglass_wres,hourglass_wores}]
@@ -151,9 +151,9 @@ Results
         Y_335.png
  ```
 Here - \
-`training_loss.txt` stores epoch wise loss information on randomly sampled images from training data and test data\
-`test_data_loss.txt` stores loss on randomly sampled images from test data\
-`checkpoint`, `events*` and `model*` files will be used to restore trained weights of network to perform inference on new data\
+`training_loss.txt` stores epoch wise loss information on randomly sampled images from training data and test data.\
+`test_data_loss.txt` stores loss on randomly sampled images from test data.\
+`checkpoint`, `events*` and `model*` files will be used to restore trained weights of network to perform inference on new data.\
 `X*.png`, `Y*.png` denote randomly selected noisy (input) and clean (ground-truth) images from test data. `pred*.png` denote corresponding denoised predictions by trained network.
 
 
