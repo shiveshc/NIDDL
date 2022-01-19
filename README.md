@@ -16,6 +16,7 @@ Deep denoising pushes the limit of functional data acquisition by recovering hig
 3. [Train on new dataset](#train-on-new-dataset)
 4. [Denoise calcium activity recordings](#denoise-calcium-activity-recordings)
 5. [Denoise independent images](#denoise-independent-images)
+6. [Run sample datasets](#run-sample-datasets)
 
 # Installation
 Installation steps tested for Windows 10 64-bit and Python 3.5
@@ -258,3 +259,69 @@ Here - \
 `run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_inference_runtime.txt` stores inference runtime information for image.\
 `img_2.png.tif` is the denoised output corresponding to `data2/img_2.png`
 
+# Run sample datasets
+For demo, we provide three sample datasets, models trained for these datasets, and denoising outputs for these datasets in `sample_runs` folder. These datasets include -
+- `Whole_brain` - z-planes from low SNR whole-brain image stacks
+- `Mechanosensory` - max-projection images from low SNR stacks of neurites of mechanosensory neurons
+- `VentralCord` - max-projection images from low SNR stacks of motor neurons in ventral cord.
+
+Structure of these folders looks like below (shown for `\sample_runs\VentralCord`- 
+```
+\sample_runs\VentralCord
+│   X_101.png
+│   X_109.png
+│   X_11.png
+│   X_115.png
+│   X_118.png
+│   X_122.png
+│   X_123.png
+│   X_26.png
+│   X_42.png
+│   X_67.png
+│   X_76.png
+│   X_81.png
+│   X_91.png
+│   X_92.png
+│
+├───run_hourglass_wres_l2_mp1_m2D_d1_2_317
+│       checkpoint
+│       events.out.tfevents.1625789062.atl1-1-02-006-35.pace.gatech.edu
+│       model.data-00000-of-00001
+│       model.index
+│       model.meta
+│       test_data_loss.txt
+│       training_loss.txt
+│
+└───sample_output
+    ├───pred_run_hourglass_wres_l2_mp1_m2D_d1_2_317_X_101.png
+    │       run_hourglass_wres_l2_mp1_m2D_d1_2_317_inference_runtime.txt
+    │       X_101.png.tif
+    │
+    ├───pred_run_hourglass_wres_l2_mp1_m2D_d1_2_317_X_11.png
+    │       run_hourglass_wres_l2_mp1_m2D_d1_2_317_inference_runtime.txt
+    │       X_11.png.tif
+    │
+    ├───pred_run_hourglass_wres_l2_mp1_m2D_d1_2_317_X_122.png
+    │       run_hourglass_wres_l2_mp1_m2D_d1_2_317_inference_runtime.txt
+    │       X_122.png.tif
+    │
+    ├───pred_run_hourglass_wres_l2_mp1_m2D_d1_2_317_X_42.png
+    │       run_hourglass_wres_l2_mp1_m2D_d1_2_317_inference_runtime.txt
+    │       X_42.png.tif
+    │
+    ├───pred_run_hourglass_wres_l2_mp1_m2D_d1_2_317_X_81.png
+    │       run_hourglass_wres_l2_mp1_m2D_d1_2_317_inference_runtime.txt
+    │       X_81.png.tif
+    │
+    ├───pred_run_hourglass_wres_l2_mp1_m2D_d1_2_317_X_91.png
+    │       run_hourglass_wres_l2_mp1_m2D_d1_2_317_inference_runtime.txt
+    │       X_91.png.tif
+    │
+    └───pred_run_hourglass_wres_l2_mp1_m2D_d1_2_317_X_92.png
+            run_hourglass_wres_l2_mp1_m2D_d1_2_317_inference_runtime.txt
+            X_92.png.tif
+```
+Here - \
+`X_*.png` correspond to low SNR images.\
+`run_hourglass_wres_l2_mp1_m2D_d1_2_317` stores `hourglass_wres` cnn trained on max-projection images (from ventral cord dataset) in `2D` mode using `l2` loss function. The stored model can be used to denoise images.\
+`sample_output\pred_*` folders store denoised outputs of trained cnn for corresponding `X_*.png` images.
