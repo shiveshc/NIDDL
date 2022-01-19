@@ -323,5 +323,9 @@ Structure of these folders looks like below (shown for `\sample_runs\VentralCord
 ```
 Here - \
 `X_*.png` correspond to low SNR images.\
-`run_hourglass_wres_l2_mp1_m2D_d1_2_317` stores `hourglass_wres` cnn trained on max-projection images (from ventral cord dataset) in `2D` mode using `l2` loss function. The stored model can be used to denoise images.\
+`run_hourglass_wres_l2_mp1_m2D_d1_2_317` stores `hourglass_wres` cnn trained on max-projection images (`mp1`) from ventral cord dataset in `2D` mode using `l2` loss function. The stored model can be used to denoise images.\
 `sample_output\pred_*` folders store denoised outputs of trained cnn for corresponding `X_*.png` images.
+
+To denoise an example image, run following commands - \
+`env\Scripts\activate.bat`\
+`python inference.py sample_runs/VentralCord/X_26.png sample_runs/VentralCord/run_hourglass_wres_l2_mp1_m2D_d1_2_317`
