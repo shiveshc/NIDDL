@@ -1,0 +1,2 @@
+model_checkpoint_path: "/storage/coda1/p-hl94/0/schaudhary9/testflight_data/denoising/Results/both_l1_16bit_hourglass_wres_d1_4_3607/model"
+all_model_checkpoint_paths: "/storage/coda1/p-hl94/0/schaudhary9/testflight_data/denoising/Results/both_l1_16bit_hourglass_wres_d1_4_3607/model"
