@@ -33,7 +33,9 @@ Or click on `Code` button on top right corner and `Download ZIP`.
 ### 2. Setting up venv and installing libraries
 Open command line terminal as administrator and navigate to cloned repository path using `cd .\whole-brain_DeepDenoising`.
 
-Next run following commands-
+Next run following commands - 
+| Windows 10 | MacOS |
+|------------|-------|
 1. `python -m venv env`
 2. `env\Scripts\activate.bat`
 3. `python -m pip install --upgrade "pip < 21.0"`
