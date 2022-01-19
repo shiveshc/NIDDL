@@ -131,8 +131,8 @@ optional arguments:
   - batch size - `10`
   
  run following commands -\
- `env\Scripts\activate.bat`\
- `python train.py /training_data 1 0 -out Results -arch unet_fixed -mode 2D -loss l1 -epoch 200 -bs 10`
+ 1) `env\Scripts\activate.bat`\
+ 2) `python train.py /training_data 1 0 -out Results -arch unet_fixed -mode 2D -loss l1 -epoch 200 -bs 10`
  
  4. Once training is finished a folder named `run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` will be created in `Results` folder. Output files in this folder should look like below (e.g. shown for a sample run)
  ```
@@ -162,10 +162,10 @@ Results
         Y_335.png
  ```
 Here - \
-`training_loss.txt` stores epoch wise loss information on randomly sampled images from training data and test data.\
-`test_data_loss.txt` stores loss on randomly sampled images from test data.\
-`checkpoint`, `events*` and `model*` files will be used to restore trained weights of network to perform inference on new data.\
-`X*.png`, `Y*.png` denote randomly selected noisy (input) and clean (ground-truth) images from test data. `pred*.png` denote corresponding denoised predictions by trained network.
+- `training_loss.txt` stores epoch wise loss information on randomly sampled images from training data and test data.\
+- `test_data_loss.txt` stores loss on randomly sampled images from test data.\
+- `checkpoint`, `events*` and `model*` files will be used to restore trained weights of network to perform inference on new data.\
+- `X*.png`, `Y*.png` denote randomly selected noisy (input) and clean (ground-truth) images from test data. `pred*.png` denote corresponding denoised predictions by trained network.
 
 
 # Denoise calcium activity recordings
@@ -210,8 +210,8 @@ e.g to denoise two video datasets with following settings -
 - save trained network path - `Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` (path should have forward slashes '/')
 
 run following commands - \
-`env\Scripts\activate.bat`\
-`python inference.py /vid1 /vid2 /Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
+1) `env\Scripts\activate.bat`\
+2) `python inference.py /vid1 /vid2 /Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
 
 __Note :__ to denoise max-projection calcium imaging datasets, folder structure of input dataset should remain same. In this case, use a network trained on max-projection images to denoise e.g. `Results/run_hourglass_wres_l1_mp1_m2D_d1_1_[tsize]` (here mp1 in run name denotes network was trained on max-projection images).
 
@@ -237,8 +237,8 @@ __Note :__ to denoise max-projection calcium imaging datasets, folder structure 
 ...
 ```
 Here - \
-`run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_inference_runtime.txt` stores inference runtime information for each image.\
-`img_1`, `img_2` etc. folders store denoised images corresponding to noisy video.
+- `run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_inference_runtime.txt` stores inference runtime information for each image.\
+- `img_1`, `img_2` etc. folders store denoised images corresponding to noisy video.
 
 # Denoise independent images
 1. E.g. to denoise 3 individual images (may be 2D images or 3D stacks) with following settings - 
@@ -246,8 +246,8 @@ Here - \
 - save trained network path - `Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]` (path should have forward slashes '/')
 
 run following commands - \
-`env\Scripts\activate.bat`\
-`python inference.py data1/img_1.tif data2/img_2.png data2/img_3.png Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
+1) `env\Scripts\activate.bat`\
+2) `python inference.py data1/img_1.tif data2/img_2.png data2/img_3.png Results/run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]`
 
 2. Once denoising is finished, output folders `data1/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_1.tif`, `data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_2.png` and `data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_3.png` will be created. Output files in these folders should look like below -
 ```
@@ -256,8 +256,8 @@ data2/pred_run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_img_2.png
     img_2.png.tif
 ```
 Here - \
-`run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_inference_runtime.txt` stores inference runtime information for image.\
-`img_2.png.tif` is the denoised output corresponding to `data2/img_2.png`
+- `run_unet_fixed_l1_mp0_m2D_d1_1_[tsize]_inference_runtime.txt` stores inference runtime information for image.\
+- `img_2.png.tif` is the denoised output corresponding to `data2/img_2.png`
 
 # Run sample datasets
 For demo, we provide three sample datasets, models trained for these datasets, and denoising outputs for these datasets in `sample_runs` folder. These datasets include -
@@ -322,10 +322,10 @@ Structure of these folders looks like below (shown for `\sample_runs\VentralCord
             X_92.png.tif
 ```
 Here - \
-`X_*.png` correspond to low SNR images.\
-`run_hourglass_wres_l2_mp1_m2D_d1_2_317` stores `hourglass_wres` cnn trained on max-projection images (`mp1`) from ventral cord dataset in `2D` mode using `l2` loss function. The stored model can be used to denoise images.\
-`sample_output\pred_*` folders store denoised outputs of trained cnn for corresponding `X_*.png` images.
+- `X_*.png` correspond to low SNR images.\
+- `run_hourglass_wres_l2_mp1_m2D_d1_2_317` stores `hourglass_wres` cnn trained on max-projection images (`mp1`) from ventral cord dataset in `2D` mode using `l2` loss function. The stored model can be used to denoise images.\
+- `sample_output\pred_*` folders store denoised outputs of trained cnn for corresponding `X_*.png` images.
 
 To denoise an example image, run following commands - \
-`env\Scripts\activate.bat`\
-`python inference.py sample_runs/VentralCord/X_26.png sample_runs/VentralCord/run_hourglass_wres_l2_mp1_m2D_d1_2_317`
+1) `env\Scripts\activate.bat`\
+2) `python inference.py sample_runs/VentralCord/X_26.png sample_runs/VentralCord/run_hourglass_wres_l2_mp1_m2D_d1_2_317`
