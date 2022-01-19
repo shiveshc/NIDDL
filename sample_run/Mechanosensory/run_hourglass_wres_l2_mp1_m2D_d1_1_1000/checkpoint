@@ -1,2 +1,0 @@
-model_checkpoint_path: "/storage/coda1/p-hl94/0/schaudhary9/testflight_data/denoising/Results/exp_mec7r_pvdr_7datasets_maxproj_hourglass_wres_d1_1_1000/model"
-all_model_checkpoint_paths: "/storage/coda1/p-hl94/0/schaudhary9/testflight_data/denoising/Results/exp_mec7r_pvdr_7datasets_maxproj_hourglass_wres_d1_1_1000/model"

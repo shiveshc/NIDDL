@@ -1,2 +1,0 @@
-model_checkpoint_path: "/storage/coda1/p-hl94/0/schaudhary9/testflight_data/denoising/Results/exp_VC_lp75_all_OH_only_maxproj_16bit_hourglass_wres_d1_2_317/model"
-all_model_checkpoint_paths: "/storage/coda1/p-hl94/0/schaudhary9/testflight_data/denoising/Results/exp_VC_lp75_all_OH_only_maxproj_16bit_hourglass_wres_d1_2_317/model"
