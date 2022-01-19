@@ -52,40 +52,40 @@ For tensorflow 1.6.0 currently setup in venv, CUDA v9.0 and `cudnn-9.0-windows10
 1. To train network on new data, pairs of noisy i.e. low SNR images (acquired at low laser power or small exposure time conditions) and clean i.e. high SNR images (acquired at high laser power or long exposure time conditions) are needed. Currently supported image size is 512 x 512 x d where d is number of images in stack. For other image sizes, either resize images first or channel dimensions need to be changed in architecture files in `cnn_archs` folder.
 
 2. Structure of training data folder should be organised as below -
-```
-data
-├───gt_imgs
-│   ├───img_1
-│   │       z_1.tif
-│   │       z_2.tif
-│   │       ...
-│   │
-│   ├───img_2
-│   │       z_1.tif
-│   │       z_2.tif
-│   │       ...
-│   │
-│   └───img_3
-│           z_1.tif
-│           z_2.tif
-│           ...
-│
-└───noisy_imgs
-    ├───img_1
-    │       z_1.tif
-    │       z_2.tif
-    │       ...
+    ```
+    data
+    ├───gt_imgs
+    │   ├───img_1
+    │   │       z_1.tif
+    │   │       z_2.tif
+    │   │       ...
+    │   │
+    │   ├───img_2
+    │   │       z_1.tif
+    │   │       z_2.tif
+    │   │       ...
+    │   │
+    │   └───img_3
+    │           z_1.tif
+    │           z_2.tif
+    │           ...
     │
-    ├───img_2
-    │       z_1.tif
-    │       z_2.tif
-    │       ...
-    │
-    └───img_3
-            z_1.tif
-            z_2.tif
-            ...
- ```
+    └───noisy_imgs
+        ├───img_1
+        │       z_1.tif
+        │       z_2.tif
+        │       ...
+        │
+        ├───img_2
+        │       z_1.tif
+        │       z_2.tif
+        │       ...
+        │
+        └───img_3
+                z_1.tif
+                z_2.tif
+                ...
+     ```
  
  3. Run `python train.py -h` to see usage and input arguments. The output on terminal should look like below -
  ```
