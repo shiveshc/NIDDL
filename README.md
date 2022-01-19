@@ -37,9 +37,9 @@ Next run following commands -
 | Windows 10 | MacOS |
 |------------|-------|
 | 1. `python -m venv env` | 1. `python -m venv env` |
-| 2. `env\Scripts\activate.bat` | `source env/bin/activate`|
+| 2. `env\Scripts\activate.bat` | `source env/bin/activate` |
 | 3. `python -m pip install --upgrade "pip < 21.0"` | 3. `python -m pip install --upgrade "pip < 21.0"` |
-| 4. `pip install -r requirements.txt` | 4. `pip install -r requirements.txt`|
+| 4. `pip install -r requirements.txt` | 4. `pip install -r requirements.txt` |
 
 Installation should take 10-15 minutes.
 
