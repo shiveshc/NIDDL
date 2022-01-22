@@ -272,7 +272,7 @@ For demo, we provide three sample datasets, models trained for these datasets, a
 - `Mechanosensory` - max-projection images from low SNR stacks of neurites of mechanosensory neurons
 - `VentralCord` - max-projection images from low SNR stacks of motor neurons in ventral cord.
 
-Structure of these folders looks like below (shown for `\sample_runs\VentralCord`- 
+Structure of these folders looks like below (shown for `\sample_runs\VentralCord`) - 
 ```
 \sample_runs\VentralCord
 │   X_101.png
@@ -336,3 +336,37 @@ Here -
 To denoise an example image, run following commands -
 1) `env\Scripts\activate.bat`
 2) `python inference.py sample_runs/VentralCord/X_26.png sample_runs/VentralCord/run_hourglass_wres_l2_mp1_m2D_d1_2_317`
+
+Upon completion, a new folder, `pred_run_hourglass_wres_l2_mp1_m2D_d1_2_317_X_26.png`, will be created in the same directory that contains denoised output. The folder structure should like below now -
+```
+\sample_runs\VentralCord
+│   X_101.png
+│   X_109.png
+│   X_11.png
+│   X_115.png
+│   X_118.png
+│   X_122.png
+│   X_123.png
+│   X_26.png
+│   X_42.png
+│   X_67.png
+│   X_76.png
+│   X_81.png
+│   X_91.png
+│   X_92.png
+│
+├───pred_run_hourglass_wres_l2_mp1_m2D_d1_2_317_X_26.png
+│       run_hourglass_wres_l2_mp1_m2D_d1_2_317_inference_runtime.txt
+│       X_26.png.tif
+│
+├───run_hourglass_wres_l2_mp1_m2D_d1_2_317
+│       checkpoint
+│       events.out.tfevents.1625789062.atl1-1-02-006-35.pace.gatech.edu
+│       model.data-00000-of-00001
+│       model.index
+│       model.meta
+│       test_data_loss.txt
+│       training_loss.txt
+│
+└───sample_output
+```
