@@ -2,7 +2,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/shiveshc/whole-brain_DeepDenoising)
 ![Python version](https://img.shields.io/badge/python-v3.5-blue)
 ![visitors](https://visitor-badge.glitch.me/badge?page_id=shiveshc.whole-brain_DeepDenoising&left_color=green&right_color=red)
-![GitHub all releases](https://img.shields.io/github/downloads/shiveshc/whole-brain_DeepDenoising/total)
+<!-- ![GitHub all releases](https://img.shields.io/github/downloads/shiveshc/whole-brain_DeepDenoising/total) -->
 
 
 # whole-brain_DeepDenoising
