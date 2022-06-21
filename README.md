@@ -8,7 +8,7 @@
 
 
 # whole-brain_DeepDenoising
-Deep denoising pushes the limit of functional data acquisition by recovering high SNR calcium traces from low SNR videos acquired using low laser power or smaller exposure time. Thus deep denoising enables faster and longer volumetric recordings.
+Deep denoising pushes the limit of functional data acquisition by recovering high SNR calcium traces from low SNR videos acquired using low laser power or smaller exposure time. Thus deep denoising enables faster and longer volumetric recordings. For more details, our ![paper](https://www.biorxiv.org/content/10.1101/2022.04.13.488233v1.full) is avalable on biorxiv.
 
 <p align = "center"><b>Denoise whole-brain videos</b></p>
 <img src = "extra/wb_denoising.gif" width=100% align="center">
