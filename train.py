@@ -1,209 +1,300 @@
-import tensorflow as tf
+import torch
 import sys
 import argparse
 import time
 import shutil
 from utils import *
+from config import TrainConfig
+from inputs import train_arg_parser
+import pprint
+import pickle
 
-def parse_argument(arg_list):
-    if not arg_list:
-        arg_list = ['-h']
-        print('error - input required, see description below')
+class ModelConfig(TrainConfig):
+    def __init__(self, inputs:dict) -> None:
+        super().__init__()
+        for param, value in inputs.items():
+            setattr(self, param, value)
 
-    parser = argparse.ArgumentParser(prog='train.py', description= 'train CNN model to denoise volumetric functional recordings')
-    parser.add_argument('data', help= 'training data path')
-    parser.add_argument('run', type=int, help='run number to distinguish different runs')
-    parser.add_argument('max_proj', choices= [1, 0], help= '1 if train network on max projection of 3D stacks else 0', default= 0)
-    parser.add_argument('-out', help= 'location for saving results')
-    parser.add_argument('-arch', choices=['unet',
-                                         'unet_fixed',
-                                         'hourglass_wres',
-                                         'hourglass_wores'], help= 'CNN architechture to use for training (default is hourglass_wres)', default= 'hourglass_wres')
-    parser.add_argument('-mode', choices= ['2D', '2.5D', '3D'], help= 'training mode (default is 2D)', default= '2D')
-    parser.add_argument('-depth', type= int, help= 'stack depth to use for training (must be odd number, default is 1)', default= 1)
-    parser.add_argument('-loss', choices= ['l2', 'l1'], help= 'L2 or L1 loss for training (default is l1)', default= 'l1')
-    parser.add_argument('-epochs', type= int, help= 'number of epochs to train the model for (150-200 is good choice, default is 150)', default= 150)
-    parser.add_argument('-lr', type= float, help= 'learning rate (default is 0.001)', default= 0.001)
-    parser.add_argument('-bs', type= int, help= 'batch size of training (default is 6)', default= 6)
-    parser.add_argument('-tsize', type= int, help= 'data size (number of images) to use for training')
-    args = parser.parse_args(arg_list)
-    return args.data,\
-           args.run,\
-           args.max_proj, \
-           args.out, \
-           args.arch, \
-           args.mode, \
-           args.depth,\
-           args.loss, \
-           args.epochs,\
-           args.lr, \
-           args.bs, \
-           args.tsize
-
-
-if __name__ == '__main__':
-    # parse input
-    data_path, run, max_proj, out_path, arch_name, mode, depth, loss, epochs, lr, bs, tsize = parse_argument(sys.argv[1:])
-    if max_proj == 1:
-        assert mode == '2D', 'training model on max-projection images thus training mode should be 2D'
-
-    if mode == '2D':
-        assert depth == 1, 'for 2D training mode, stack depth for training must be 1'
-    else:
-        assert depth%2 == 1, 'for 2.5D or 3D training mode, stack depth must be an odd number'
-
-    assert os.path.isdir(data_path), 'training data path does not exist'
-
-
+def get_data(
+        model_config
+):
     ## load data
-    # base_data_path = ['D:/Shivesh/Denoising/20210206_denoising_ZC392/cond_10ms110_10ms1000_v2']
-    base_data_path = [data_path]
     all_gt_img_data = []
     all_noisy_data = []
-    for paths in base_data_path:
-        all_gt_img_data, all_noisy_data = load_data(paths, all_gt_img_data, all_noisy_data, max_proj)
-
+    for paths in model_config.data:
+        all_gt_img_data, all_noisy_data = load_data(paths, 
+                                                    all_gt_img_data, 
+                                                    all_noisy_data, 
+                                                    model_config.max_proj)
 
     ## prepare training data
-    train_gt_img_data, train_noisy_data = prepare_training_data(all_gt_img_data, all_noisy_data, depth, mode)
+    train_gt_img_data, train_noisy_data = prepare_training_data(all_gt_img_data, 
+                                                                all_noisy_data, 
+                                                                model_config.depth, 
+                                                                model_config.mode)
 
     ## split data into patches
     # train_gt_img_data_patch, train_noisy_img_data_patch = to_patches(train_gt_img_data, train_noisy_data)
     train_gt_img_data_patch = train_gt_img_data
     train_noisy_img_data_patch = train_noisy_data
 
+
     ## subsample data based on tsize for training
-    if tsize != None:
+    if model_config.tsize != 0:
         # if tsize is specified, use tsize number of images as train and rest as test
-        tsize = int(tsize)
-        split_ratio = (train_gt_img_data_patch.shape[0] - tsize)/train_gt_img_data_patch.shape[0]
+        split_ratio = (train_gt_img_data_patch.shape[0] - model_config.tsize)/train_gt_img_data_patch.shape[0]
         train_X, train_Y, test_X, test_Y = split_train_test(train_noisy_img_data_patch, train_gt_img_data_patch, split_ratio)
         tsize = train_X.shape[0]
     else:
         # if tsize is not specified, split full data for train and test
         train_X, train_Y, test_X, test_Y = split_train_test(train_noisy_img_data_patch, train_gt_img_data_patch, 0.33)
         tsize = train_X.shape[0]
+    
+    ## pytorch specific channel dimension permuting
+    train_X, train_Y, test_X, test_Y = pytorch_specific_manipulations(train_X,
+                                                                      train_Y,
+                                                                      test_X,
+                                                                      test_Y)
+    
+    return train_X, train_Y, test_X, test_Y, tsize
 
+def get_model(
+        model_config,
+        in_channels
+):
+    model = get_cnn_arch_from_argin(model_config.arch)(in_channels=in_channels, out_channels=32)
+    return model
+
+def dummy_def():
+    return 1
+
+def train_step(
+        model_config,
+        epoch,
+        tsize,
+        train_X,
+        train_Y,
+        test_X, 
+        test_Y,
+        device,
+        model,
+        optimizer,
+        loss_fn,
+        file
+):
+    if tsize > 500:
+        idx = random.sample(range(tsize), 500)
+        curr_batch_X = train_X[idx, :, :, :]
+        curr_batch_Y = train_Y[idx, :, :, :]
+    else:
+        curr_batch_X = train_X
+        curr_batch_Y = train_Y
+    tic = time.time()
+    for batch in range(max(len(curr_batch_X) // model_config.bs, 1)):
+        batch_x = curr_batch_X[batch * model_config.bs:min((batch + 1) * model_config.bs, len(curr_batch_X))]
+        batch_y = curr_batch_Y[batch * model_config.bs:min((batch + 1) * model_config.bs, len(curr_batch_Y))]
+        batch_x = torch.tensor(batch_x, dtype=torch.float).to(device)
+        batch_y = torch.tensor(batch_y, dtype=torch.float).to(device)
+        
+        optimizer.zero_grad()
+        pred = model(batch_x)
+        loss = loss_fn(pred, batch_y)
+        loss.backward()
+        optimizer.step()
+    toc = time.time()
+
+    # Calculate accuracy of 10 test images, repeat 5 times and report mean
+    batch_test_loss = []
+    for k in range(5):
+        idx = [i for i in range(test_X.shape[0])]
+        random.shuffle(idx)
+        batch_x = test_X[idx[:min(10, test_X.shape[0])], :, :, :]
+        batch_y = test_Y[idx[:min(10, test_Y.shape[0])], :, :, :]
+        batch_x = torch.tensor(batch_x, dtype=torch.float).to(device)
+        batch_y = torch.tensor(batch_y, dtype=torch.float).to(device)
+        with torch.no_grad():
+            pred = model(batch_x)
+        loss = loss_fn(pred, batch_y)
+        batch_test_loss.append(loss)
+
+    # Calculate accuracy of 10 train images, repeat 5 times and report mean
+    batch_train_loss = []
+    for k in range(5):
+        idx = [i for i in range(train_X.shape[0])]
+        random.shuffle(idx)
+        batch_x = train_X[idx[:min(10, train_X.shape[0])], :, :, :]
+        batch_y = train_Y[idx[:min(10, train_Y.shape[0])], :, :, :]
+        batch_x = torch.tensor(batch_x, dtype=torch.float).to(device)
+        batch_y = torch.tensor(batch_y, dtype=torch.float).to(device)
+        with torch.no_grad():
+            pred = model(batch_x)
+        loss = loss_fn(pred, batch_y)
+        batch_train_loss.append(loss)
+
+    mean_train_loss = sum(batch_train_loss) / len(batch_train_loss)
+    mean_test_loss = sum(batch_test_loss) / len(batch_test_loss)
+    print(f'epoch: {epoch}, Train Loss: {mean_train_loss}, Test Loss: {mean_test_loss}')
+    file.write(f'{epoch},{mean_train_loss},{mean_test_loss},{toc-tic},{model_config.depth},{model_config.run},{model_config.tsize}\n')
+
+
+def save_example_denoising_on_random_test_data(
+        model_config,
+        test_X,
+        test_Y,
+        model,
+        device,
+        results_dir
+):
+    print('saving denoising on random test examples')
+    for i in range(10):
+        temp_idx = random.randint(0, test_X.shape[0] - 1)
+        batch_x = test_X[temp_idx, :, :, :]
+        batch_y = test_Y[temp_idx, :, :, :]
+        batch_x = batch_x[np.newaxis, :, :, :]
+        batch_y = batch_y[np.newaxis, :, :, :]
+        batch_x = torch.tensor(batch_x, dtype=torch.float).to(device)
+        batch_y = torch.tensor(batch_y, dtype=torch.float).to(device)
+        with torch.no_grad():
+            pred = model(batch_x)
+        batch_x = batch_x.cpu().numpy()
+        batch_y = batch_y.cpu().numpy()
+        pred = pred.cpu().numpy()
+        save_name_X = os.path.join(results_dir, f'X_{temp_idx + 1}.png')
+        save_name_Y = os.path.join(results_dir, f'Y_{temp_idx + 1}.png')
+        save_name_pred = os.path.join(results_dir, f'pred_{temp_idx + 1}.png')
+        if model_config.mode == '2D':
+            cv2.imwrite(save_name_X, batch_x[0, 0, :, :].astype(np.uint16))  # this is the middle zplane corresponding to gt zplane
+            cv2.imwrite(save_name_Y, batch_y[0, 0, :, :].astype(np.uint16))
+            cv2.imwrite(save_name_pred, pred[0, 0, :, :].astype(np.uint16))
+        elif model_config.mode == '2.5D':
+            cv2.imwrite(save_name_X, batch_x[0, int((model_config.depth + 1) / 2 - 1), :, :].astype(np.uint16))  # this is the middle zplane corresponding to gt zplane
+            cv2.imwrite(save_name_Y, batch_y[0, 0, :, :].astype(np.uint16))
+            cv2.imwrite(save_name_pred, pred[0, 0, :, :].astype(np.uint16))
+        elif model_config.mode == '3D':
+            os.mkdir(os.path.join(results_dir, f'img_{temp_idx + 1}'))
+            for z in range(pred.shape[3]):
+                cv2.imwrite(os.path.join(results_dir, f'img_{temp_idx + 1}', f'X_z{z + 1}.png'), batch_x[0, z, :, :].astype(np.uint16))
+                cv2.imwrite(os.path.join(results_dir, f'img_{temp_idx + 1}', f'Y_z{z + 1}.png'), batch_y[0, z, :, :].astype(np.uint16))
+                cv2.imwrite(os.path.join(results_dir, f'img_{temp_idx + 1}', f'pred_z{z + 1}.png'), pred[0, z, :, :].astype(np.uint16))
+
+
+def calculate_metrics(
+        model_config,
+        test_X,
+        test_Y,
+        model,
+        loss_fn,
+        device,
+        results_dir
+):
+    file = open(os.path.join(results_dir, 'test_data_loss.txt'), 'a')
+    idx = [i for i in range(test_X.shape[0])]
+    random.shuffle(idx)
+    for i in range(min(150, len(idx))):
+        batch_x = test_X[idx[i], :, :, :]
+        batch_y = test_Y[idx[i], :, :, :]
+        batch_x = batch_x[np.newaxis, :, :, :]
+        batch_y = batch_y[np.newaxis, :, :, :]
+        batch_x = torch.tensor(batch_x, dtype=torch.float).to(device)
+        batch_y = torch.tensor(batch_y, dtype=torch.float).to(device)
+        tic = time.time()
+        with torch.no_grad():
+            pred = model(batch_x)
+        toc = time.time()
+        loss = loss_fn(pred, batch_y)
+        file.write(f'{i},{idx[i] + 1},{loss},{toc-tic},{model_config.depth},{model_config.run},{model_config.tsize}\n')
+    file.close()
+
+
+def trainer(model_config):
+    # collate data
+    train_X, train_Y, test_X, test_Y, tsize = get_data(model_config)
 
     ## define CNN model
-    training_iters = epochs
-    learning_rate = lr
-    batch_size = bs
-
-    x = tf.placeholder("float", [None, train_noisy_img_data_patch.shape[1], train_noisy_img_data_patch.shape[2], train_noisy_img_data_patch.shape[3]])
-    y = tf.placeholder("float", [None, train_gt_img_data_patch.shape[1], train_gt_img_data_patch.shape[2], train_gt_img_data_patch.shape[3]])
-    arch = get_cnn_arch_from_argin(arch_name)
-    output_shape = y.shape[3]
-    pred = arch.conv_net(x, output_shape)
-
-    if loss == 'l1':
-        cost = tf.reduce_mean(tf.abs(pred - y))
-    elif loss == 'l2':
-        cost = tf.reduce_mean(tf.squared_difference(pred, y))
-
-    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
-    init = tf.global_variables_initializer()
-    saver = tf.train.Saver()
+    model = get_model(model_config, in_channels=train_X.shape[1])
+    optimizer = torch.optim.Adam(model.parameters(), lr=model_config.lr)
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    def loss_fn(pred, y):
+        if model_config.loss == 'l2':
+            loss = torch.mean((y - pred)**2)
+        elif model_config.loss == 'l1':
+            loss = torch.mean(torch.abs(y - pred))
+        return loss
 
     ## make folder where all results will be saved
-    if out_path != None:
-        if os.path.isdir(out_path) == False:
-            os.mkdir(out_path)
-        results_dir = out_path + '/run_' + arch_name + '_' + loss + '_mp' + str(max_proj) + '_m' + mode + '_d' + str(depth) + '_' + str(run) + '_' + str(tsize)
+    base_save_path = f'run_{model_config.arch}_'\
+                    f'{model_config.loss}_'\
+                    f'mp{model_config.max_proj}_'\
+                    f'm{model_config.mode}_'\
+                    f'd{model_config.depth}_'\
+                    f'{model_config.run}_'\
+                    f'{model_config.tsize}'
+    if model_config.out != '':
+        if os.path.isdir(model_config.out) == False:
+            os.mkdir(model_config.out)
+        results_dir = os.path.join(model_config.out, base_save_path)
     else:
-        results_dir = 'run_' + arch_name + '_' + loss + '_mp' + str(max_proj) + '_m' + mode + '_d' + str(depth) + '_' + str(run) + '_' + str(tsize)
+        results_dir = base_save_path
     if os.path.isdir(results_dir):
         shutil.rmtree(results_dir)
     os.mkdir(results_dir)
 
-    ## train model and save results
-    with tf.Session() as sess:
-        sess.run(init)
-        train_loss = []
-        test_loss = []
-        summary_writer = tf.summary.FileWriter(results_dir, sess.graph)
-        file = open(results_dir + '/training_loss.txt', 'a')
+    ## start training
+    pprint.pprint('Starting training')
+    pprint.pprint(vars(model_config))
+    file = open(os.path.join(results_dir, 'training_loss.txt'), 'a')
+    for epoch in range(model_config.epochs):
+        train_step(
+            model_config,
+            epoch,
+            tsize,
+            train_X,
+            train_Y,
+            test_X,
+            test_Y,
+            device,
+            model,
+            optimizer,
+            loss_fn,
+            file
+        )
+    file.close()
 
-        for i in range(training_iters):
-            if tsize > 500:
-                idx = random.sample(range(tsize), 500)
-                curr_batch_X = train_X[idx, :, :, :]
-                curr_batch_Y = train_Y[idx, :, :, :]
-            else:
-                curr_batch_X = train_X
-                curr_batch_Y = train_Y
-            tic = time.clock()
-            for batch in range(len(curr_batch_X) // batch_size):
-                batch_x = curr_batch_X[batch * batch_size:min((batch + 1) * batch_size, len(curr_batch_X))]
-                batch_y = curr_batch_Y[batch * batch_size:min((batch + 1) * batch_size, len(curr_batch_Y))]
-                opt = sess.run(optimizer, feed_dict={x: batch_x, y: batch_y})
-                loss = sess.run(cost, feed_dict={x: batch_x, y: batch_y})
-            toc = time.clock()
+    # save model config and model wieghts
+    model_config.in_channels = model.in_channels
+    model_config.out_channels = model.out_channels
+    model_config.tsize = tsize
+    save_config_path = os.path.join(results_dir, 'model_config.pickle')
+    save_model_path = os.path.join(results_dir, 'model_weights.pt')
+    with open(save_config_path, 'wb') as handle:
+        pickle.dump(vars(model_config), handle, protocol=pickle.HIGHEST_PROTOCOL)
+    print(f'saved model config at {save_config_path}')
+    torch.save(model.state_dict(), save_model_path)
+    print(f'saved model weights at {save_model_path}')
 
-            # Calculate accuracy of 10 test images, repeat 5 times and report mean
-            batch_test_loss = []
-            for k in range(5):
-                idx = [i for i in range(test_X.shape[0])]
-                random.shuffle(idx)
-                curr_loss = sess.run(cost, feed_dict={x: test_X[idx[:min(10, test_X.shape[0])], :, :, :], y: test_Y[idx[:min(10, test_X.shape[0])], :, :, :]})
-                batch_test_loss.append(curr_loss)
+    # save some random prediction examples
+    save_example_denoising_on_random_test_data(
+        model_config,
+        test_X,
+        test_Y,
+        model,
+        device,
+        results_dir
+    )
 
-            # Calculate accuracy of 10 train images, repeat 5 times and report mean
-            batch_train_loss = []
-            for k in range(5):
-                idx = [i for i in range(train_X.shape[0])]
-                random.shuffle(idx)
-                curr_loss = sess.run(cost, feed_dict={x: train_X[idx[:min(10, train_X.shape[0])], :, :, :], y: train_Y[idx[:min(10, train_X.shape[0])], :, :, :]})
-                batch_train_loss.append(curr_loss)
+    # calculate accuracy on test data and save results
+    calculate_metrics(
+        model_config,
+        test_X,
+        test_Y,
+        model,
+        loss_fn,
+        device,
+        results_dir
+    )
 
-            mean_train_loss = sum(batch_train_loss) / len(batch_train_loss)
-            mean_test_loss = sum(batch_test_loss) / len(batch_test_loss)
-            print("Iter " + str(i) + ", Train Loss= " + "{:.6f}".format(mean_train_loss) + ",Test Loss= " + "{:.6f}".format(mean_test_loss))
-            file.write(str(i) + ',' + str(mean_train_loss) + ',' + str(mean_test_loss) + ',' + str(toc-tic) + ',' + str(depth) + ',' + str(run) + ',' + str(tsize) + '\n')
 
-        file.close()
-
-        # save final model
-        saver.save(sess, results_dir + '/model')
-
-        # save some random prediction examples
-        for i in range(10):
-            temp_idx = random.randint(0, test_X.shape[0])
-            temp_X = test_X[temp_idx, :, :, :]
-            temp_Y = test_Y[temp_idx, :, :, :]
-            temp_X = temp_X[np.newaxis, :, :, :]
-            temp_Y = temp_Y[np.newaxis, :, :, :]
-            temp_pred = sess.run(pred, feed_dict={x: temp_X, y: temp_Y})
-            if mode == '2D':
-                cv2.imwrite(results_dir + '/X_' + str(temp_idx + 1) + '.png', temp_X[0, :, :, 0].astype(np.uint16))  # this is the middle zplane corresponding to gt zplane
-                cv2.imwrite(results_dir + '/Y_' + str(temp_idx + 1) + '.png', temp_Y[0, :, :, 0].astype(np.uint16))
-                cv2.imwrite(results_dir + '/pred_' + str(temp_idx + 1) + '.png', temp_pred[0, :, :, 0].astype(np.uint16))
-            elif mode == '2.5D':
-                cv2.imwrite(results_dir + '/X_' + str(temp_idx + 1) + '.png', temp_X[0, :, :, int((depth + 1) / 2 - 1)].astype(np.uint16))  # this is the middle zplane corresponding to gt zplane
-                cv2.imwrite(results_dir + '/Y_' + str(temp_idx + 1) + '.png', temp_Y[0, :, :, 0].astype(np.uint16))
-                cv2.imwrite(results_dir + '/pred_' + str(temp_idx + 1) + '.png', temp_pred[0, :, :, 0].astype(np.uint16))
-            elif mode == '3D':
-                os.mkdir(results_dir + '/img_' + str(temp_idx + 1))
-                for z in range(temp_pred.shape[3]):
-                    cv2.imwrite(results_dir + '/img_' + str(temp_idx + 1) + '/X_z' + str(z + 1) + '.png', temp_X[0, :, :, z].astype(np.uint16))  # this is the middle zplane corresponding to gt zplane
-                    cv2.imwrite(results_dir + '/img_' + str(temp_idx + 1) + '/Y_z' + str(z + 1) + '.png', temp_Y[0, :, :, z].astype(np.uint16))
-                    cv2.imwrite(results_dir + '/img_' + str(temp_idx + 1) + '/pred_z' + str(z + 1) + '.png', temp_pred[0, :, :, z].astype(np.uint16))
-
-        # calculate accuracy on test data
-        file = open(results_dir + '/test_data_loss.txt', 'a')
-        idx = [i for i in range(test_X.shape[0])]
-        random.shuffle(idx)
-        for i in range(min(150, len(idx))):
-            temp_X = test_X[idx[i], :, :, :]
-            temp_Y = test_Y[idx[i], :, :, :]
-            temp_X = temp_X[np.newaxis, :, :, :]
-            temp_Y = temp_Y[np.newaxis, :, :, :]
-            curr_loss = sess.run(cost, feed_dict={x: temp_X, y: temp_Y})
-            tic = time.clock()
-            temp_pred = sess.run(pred, feed_dict={x: temp_X, y: temp_Y})
-            toc = time.clock()
-            file.write(str(i) + ',' + str(idx[i] + 1) + ',' + str(curr_loss) + ',' + str(toc-tic) + ',' + str(depth) + ',' + str(run) + ',' + str(tsize) + '\n')
-
-        file.close()
-
-        summary_writer.close()
+if __name__ == '__main__':
+    
+    model_config = ModelConfig(train_arg_parser())
+    trainer(model_config)

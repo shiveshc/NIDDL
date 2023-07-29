@@ -1,111 +1,135 @@
-import tensorflow as tf
+import torch
 import time
 import shutil
 import argparse
 import sys
+from config import *
+from inputs import *
 from utils_inference import *
 from utils import get_cnn_arch_from_argin
+import pickle
+import os
+from tqdm import tqdm
 
-def parse_argument(arg_list):
-    if not arg_list:
-        arg_list = ['-h']
-        print('error - input required, see description below')
+class ModelConfig(TrainConfig):
+    def __init__(self, inputs:dict) -> None:
+        super().__init__()
+        for param, value in inputs.items():
+            setattr(self, param, value)
 
-    parser = argparse.ArgumentParser(prog='inference.py', description= 'denoise images using weights of trained model')
-    parser.add_argument('data', nargs= '+', help= 'paths of datasets to be denoised')
-    parser.add_argument('run', help='path of saved trained model')
-    args = parser.parse_args(arg_list)
-    return args.data,\
-           args.run
+
+class InfConfig(InferenceConfig):
+    def __init__(self, inputs:dict) -> None:
+        super().__init__()
+        for param, value in inputs.items():
+            setattr(self, param, value)
+
+
+def get_trained_model_config(
+    inference_config        
+):
+    config_path = os.path.join(inference_config.run, 'model_config.pickle')
+    with open(config_path, 'rb') as handle:
+        config = pickle.load(handle)
+    model_config = ModelConfig(config)
+    return model_config
+
+
+def get_trained_model(
+        inference_config,
+        model_config
+):
+    model_path = os.path.join(inference_config.run, 'model_weights.pt')
+    model = get_cnn_arch_from_argin(model_config.arch)(model_config.in_channels, model_config.out_channels)
+    model.load_state_dict(torch.load(model_path))
+    return model
+
+
+def denoise_data(
+        inference_config,
+        model_config,
+        model,
+):
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+    for d in tqdm(range(len(inference_config.data))):
+        data_path = inference_config.data[d]
+
+        print(f'Denoising {data_path}')
+        if os.path.isdir(data_path): # data path are directories containing images
+            all_noisy_data = load_data(data_path, model_config.max_proj)
+
+            pred_dir = os.path.join(data_path, 'pred_model')
+            if os.path.isdir(pred_dir):
+                shutil.rmtree(pred_dir)
+            os.mkdir(pred_dir)
+            file = open(os.path.join(pred_dir, 'inference_runtime.txt'), 'w')
+            for i in tqdm(range(len(all_noisy_data))):
+                curr_img = all_noisy_data[i]
+                curr_img_dir = os.path.join(pred_dir, f'img_{i + 1}')
+                os.mkdir(curr_img_dir)
+                for z in range(curr_img.shape[2]):
+                    input_x = make_cnn_input_data(curr_img, z, int(model_config.depth))
+                    input_x = input_x[np.newaxis, :, :, :]
+                    input_x = pytorch_specific_manipulations(input_x)
+                    input_x = torch.tensor(input_x, dtype=torch.float).to(device)
+                    tic = time.time()
+                    with torch.no_grad():
+                        temp_pred = model(input_x)
+                    toc = time.time()
+                    temp_pred = temp_pred.cpu().numpy()
+                    file.write(f'{i},{z+1},{toc-tic},{model_config.arch},{model_config.depth},{model_config.run},{model_config.tsize}\n')
+                    cv2.imwrite(os.path.join(curr_img_dir, f'z_{z + 1}.tif'), temp_pred[0, int((model_config.depth + 1) / 2 - 1), :, :].astype(np.uint16))
+            file.close()
+
+        elif os.path.exists(data_path): # data path are image files
+            all_noisy_data, all_img_name, all_img_path = load_data_indiv_imgs(data_path, model_config.max_proj)
+
+            pred_dir = os.path.join(all_img_path[0], f'pred_{all_img_name[0]}')
+            if os.path.isdir(pred_dir):
+                shutil.rmtree(pred_dir)
+            os.mkdir(pred_dir)
+            file = open(os.path.join(pred_dir, 'inference_runtime.txt'), 'w')
+            curr_img = all_noisy_data[0]
+            if len(curr_img.shape) == 3:
+                for z in range(curr_img.shape[2]):
+                    input_x = make_cnn_input_data(curr_img, z, int(model_config.depth))
+                    input_x = input_x[np.newaxis, :, :, :]
+                    input_x = pytorch_specific_manipulations(input_x)
+                    input_x = torch.tensor(input_x, dtype=torch.float).to(device)
+                    tic = time.time()
+                    with torch.no_grad():
+                        temp_pred = model(input_x)
+                    toc = time.time()
+                    temp_pred = temp_pred.cpu().numpy()
+                    file.write(f'{z + 1},{toc-tic},{model_config.arch},{model_config.depth},{model_config.run},{model_config.tsize}\n')
+                    cv2.imwrite(os.path.join(pred_dir, f'z_{z + 1}.tif'), temp_pred[0, int((model_config.depth + 1) / 2 - 1), :, :].astype(np.uint16))
+            elif len(curr_img.shape) == 2:
+                input_x = curr_img[:, :, np.newaxis]
+                input_x = make_cnn_input_data(input_x, 0, int(model_config.depth))
+                input_x = input_x[np.newaxis, :, :, :]
+                input_x = pytorch_specific_manipulations(input_x)
+                input_x = torch.tensor(input_x, dtype=torch.float).to(device)
+                tic = time.time()
+                with torch.no_grad():
+                        temp_pred = model(input_x)
+                toc = time.time()
+                temp_pred = temp_pred.cpu().numpy()
+                file.write(f'{1},{toc-tic},{model_config.arch},{model_config.depth},{model_config.run},{model_config.tsize}\n')
+                cv2.imwrite(os.path.join(pred_dir, f'{all_img_name[0]}.tif'), temp_pred[0, int((model_config.depth + 1) / 2 - 1), :, :].astype(np.uint16))
+            file.close()
+
 
 
 if __name__ == '__main__':
 
-    # parse input arguments
-    data_paths, run_path = parse_argument(sys.argv[1:])
-    assert os.path.exists(run_path + '/checkpoint'), 'trained model either does not exist in run path or not correctly saved'
-    assert os.path.exists(run_path + '/model.index'), 'trained model either does not exist in run path or not correctly saved'
-    assert os.path.exists(run_path + '/model.meta'), 'trained model either does not exist in run path or not correctly saved'
-    assert os.path.exists(run_path + '/model.data-00000-of-00001'), 'trained model either does not exist in run path or not correctly saved'
+    # get inference parameters
+    inference_config = InfConfig(inference_arg_parser())
 
-    # get run parameters
-    base_path_run, run_name, max_proj, mode, arch_name, depth, run, tsize = get_run_params(run_path)
-
-    save_model_path = run_path
-
-    for data_path in data_paths:
-        if os.path.isdir(data_path):
-            all_noisy_data = load_data(data_path, max_proj)
-        elif os.path.exists(data_path):
-            all_noisy_data, all_img_name, all_img_path = load_data_indiv_imgs(data_path, max_proj)
-
-        # redefine cnn model based on parameters extracted from run_name
-        tf.reset_default_graph()
-        x = tf.placeholder("float", [None, all_noisy_data[0].shape[0], all_noisy_data[0].shape[1], depth])
-        arch = get_cnn_arch_from_argin(arch_name)
-
-        if mode == '3D':
-            output_shape = int(depth)
-        else:
-            output_shape = 1
-
-        pred = arch.conv_net(x, output_shape)
-
-        saver = tf.train.Saver()
-
-        with tf.Session() as sess:
-            # saved_model.restore(sess, save_model_path + '/model')
-            saver.restore(sess, save_model_path + '/model')
-            model_size = os.path.getsize(save_model_path + '/model.data-00000-of-00001')
-
-
-            if os.path.isdir(data_path):
-                pred_dir = data_path + '/pred_' + run_name
-                if os.path.isdir(pred_dir):
-                    shutil.rmtree(pred_dir)
-                os.mkdir(pred_dir)
-                file = open(pred_dir + '/' + run_name + '_inference_runtime.txt', 'w')
-
-                for i in range(len(all_noisy_data)):
-                    curr_img = all_noisy_data[i]
-                    curr_img_dir = pred_dir + '/img_' + str(i + 1)
-                    os.mkdir(curr_img_dir)
-                    for z in range(curr_img.shape[2]):
-                        input_x = make_cnn_input_data(curr_img, z, int(depth))
-                        input_x = input_x[np.newaxis, :, :, :]
-                        tic = time.clock()
-                        temp_pred = sess.run(pred, feed_dict={x: input_x})
-                        toc = time.clock()
-                        file.write(str(i) + ',' + str(z + 1) + ',' + str(toc - tic) + ',' + str(model_size) + ',' + arch_name + ',' + str(depth) + ',' + str(run) + ',' + str(tsize) + '\n')
-                        cv2.imwrite(curr_img_dir + '/z_' + str(z + 1) + '.tif', temp_pred[0, :, :, int((depth + 1) / 2 - 1)].astype(np.uint16))
-
-                file.close()
-
-            elif os.path.exists(data_path):
-                pred_dir = all_img_path[0] + '/pred_' + run_name + '_' + all_img_name[0]
-                if os.path.isdir(pred_dir):
-                    shutil.rmtree(pred_dir)
-                os.mkdir(pred_dir)
-                file = open(pred_dir + '/' + run_name + '_inference_runtime.txt', 'w')
-
-                curr_img = all_noisy_data[0]
-                if len(curr_img.shape) == 3:
-                    for z in range(curr_img.shape[2]):
-                        input_x = make_cnn_input_data(curr_img, z, int(depth))
-                        input_x = input_x[np.newaxis, :, :, :]
-                        tic = time.clock()
-                        temp_pred = sess.run(pred, feed_dict={x: input_x})
-                        toc = time.clock()
-                        file.write(str(z + 1) + ',' + str(toc - tic) + ',' + str(model_size) + ',' + arch_name + ',' + str(depth) + ',' + str(run) + ',' + str(tsize) + '\n')
-                        cv2.imwrite(pred_dir + '/z_' + str(z + 1) + '.tif', temp_pred[0, :, :, int((depth + 1) / 2 - 1)].astype(np.uint16))
-                elif len(curr_img.shape) == 2:
-                    input_x = curr_img[:, :, np.newaxis]
-                    input_x = make_cnn_input_data(input_x, 0, int(depth))
-                    input_x = input_x[np.newaxis, :, :, :]
-                    tic = time.clock()
-                    temp_pred = sess.run(pred, feed_dict={x: input_x})
-                    toc = time.clock()
-                    file.write(str(1) + ',' + ',' + str(toc - tic) + ',' + str(model_size) + ',' + arch_name + ',' + str(depth) + ',' + str(run) + ',' + str(tsize) + '\n')
-                    cv2.imwrite(pred_dir + '/' + all_img_name[0] + '.tif', temp_pred[0, :, :, int((depth + 1) / 2 - 1)].astype(np.uint16))
-
-                file.close()
+    # get saved model
+    model_config = get_trained_model_config(inference_config)
+    model = get_trained_model(inference_config, model_config)
+    
+    # denoise data
+    denoise_data(inference_config, model_config, model)
+    

@@ -3,39 +3,66 @@ import cv2
 import numpy as np
 
 def load_data(data_path, max_proj):
-    noisy_vid_path = data_path + '/' + 'noisy_imgs'
+    noisy_vid_path = os.path.join(data_path, 'noisy_imgs')
 
     all_noisy_data = []
 
     img_list = os.listdir(noisy_vid_path)
-    img_num = [int(img[4:len(img)]) for img in img_list]
-    num_imgs = max(img_num)
 
-    for img in range(1, num_imgs + 1):
-        zplane_list = os.listdir(noisy_vid_path + '/img_' + str(img))
-        zplane_num = [int(zplane[2:len(zplane) - 4]) for zplane in zplane_list]
-        num_zplanes = max(zplane_num)
-        curr_noisy_img = []
-        for z in range(1, num_zplanes + 1):
-            noisy_img = cv2.imread(noisy_vid_path + '/img_' + str(img) + '/z_' + str(z) + '.tif', -1)
-            curr_noisy_img.append(noisy_img)
+    for img in img_list:
+        if os.path.isfile(os.path.join(noisy_vid_path, img)):
+            curr_noisy_img = cv2.imread(os.path.join(noisy_vid_path, img), -1)
+            if len(curr_noisy_img.shape) == 2:
+                curr_noisy_img = np.expand_dims(curr_noisy_img, 2)
+        elif os.path.isdir(os.path.join(noisy_vid_path, img)):
+            zplane_list = os.listdir(os.path.join(noisy_vid_path, img))
+            zplane_num = [int(zplane[2:len(zplane) - 4]) for zplane in zplane_list]
+            num_zplanes = max(zplane_num)
+            curr_noisy_img = []
+            for z in range(1, num_zplanes + 1):
+                noisy_img = cv2.imread(os.path.join(noisy_vid_path, img, f'z_{z}.tif'), -1)
+                curr_noisy_img.append(noisy_img)
 
-        curr_noisy_img = np.array(curr_noisy_img)
-        curr_noisy_img = np.transpose(curr_noisy_img, axes=(1, 2, 0))
-        if max_proj == 1:
-            curr_noisy_img = np.amax(curr_noisy_img, axis=2, keepdims=True)
+            curr_noisy_img = np.array(curr_noisy_img)
+            curr_noisy_img = np.transpose(curr_noisy_img, axes=(1, 2, 0))
+            if max_proj == 1:
+                curr_noisy_img = np.amax(curr_noisy_img, axis=2, keepdims=True)
         all_noisy_data.append(curr_noisy_img)
 
     return all_noisy_data
+
+# def load_data(data_path, max_proj):
+#     noisy_vid_path = os.path.join(data_path, 'noisy_imgs')
+
+#     all_noisy_data = []
+
+#     img_list = os.listdir(noisy_vid_path)
+#     img_num = [int(img[4:len(img)]) for img in img_list]
+#     num_imgs = max(img_num)
+
+#     for img in range(1, num_imgs + 1):
+#         zplane_list = os.listdir(os.path.join(noisy_vid_path, f'img_{img}'))
+#         zplane_num = [int(zplane[2:len(zplane) - 4]) for zplane in zplane_list]
+#         num_zplanes = max(zplane_num)
+#         curr_noisy_img = []
+#         for z in range(1, num_zplanes + 1):
+#             noisy_img = cv2.imread(os.path.join(noisy_vid_path, f'img_{img}', f'z_{z}.tif'), -1)
+#             curr_noisy_img.append(noisy_img)
+
+#         curr_noisy_img = np.array(curr_noisy_img)
+#         curr_noisy_img = np.transpose(curr_noisy_img, axes=(1, 2, 0))
+#         if max_proj == 1:
+#             curr_noisy_img = np.amax(curr_noisy_img, axis=2, keepdims=True)
+#         all_noisy_data.append(curr_noisy_img)
+
+#     return all_noisy_data
 
 def load_data_indiv_imgs(img, max_proj):
     all_noisy_data = []
     all_img_name = []
     all_img_path = []
 
-    backslash_idx = [i for i, char in enumerate(img) if char == '/']
-    curr_img_path = img[:backslash_idx[-1]]
-    curr_img_name = img[backslash_idx[-1] + 1:len(img)]
+    curr_img_path, curr_img_name = os.path.split(img)
     curr_img = cv2.imread(img, -1)
     if max_proj == 1:
         if len(curr_img.shape) == 3:
@@ -104,3 +131,7 @@ def get_run_params(run_path):
     tsize = int(run_name[underscore_idx[-1] + 1:])
 
     return base_path_run, run_name, max_proj, model_type, arch_name, depth, run, tsize
+
+def pytorch_specific_manipulations(img):
+    img = np.transpose(img, (0, 3, 1, 2)).astype('int16')
+    return img

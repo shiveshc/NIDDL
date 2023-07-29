@@ -1,0 +1,37 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: train_pytorch",
+            "type": "python",
+            "request": "launch",
+            "program": "/home/schaudhary/whole-brain_DeepDenoising/train.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "-data", "/home/schaudhary/whole-brain_DeepDenoising/data/synthetic_data/signal_5",
+                "-arch", "hourglass_wres",
+                "-depth", "1"
+            ],
+        },
+        {
+            "name": "Python: inference_pytorch",
+            "type": "python",
+            "request": "launch",
+            "program": "/home/schaudhary/whole-brain_DeepDenoising/inference_pytorch.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "-data",
+                "/home/schaudhary/whole-brain_DeepDenoising/data/20210729_denoising_PVD_array/cond_10ms_r200g200_10ms_r1000g1000/Ch3/",
+                "/home/schaudhary/whole-brain_DeepDenoising/data/20210729_denoising_PVD_array/cond_10ms_r200g200_10ms_r1000g1000/Ch3/",
+                "/home/schaudhary/whole-brain_DeepDenoising/data/20210729_denoising_PVD_array/cond_10ms_r200g200_10ms_r1000g1000/Ch3/",
+                "-run",
+                "/home/schaudhary/whole-brain_DeepDenoising/run_hourglass_wres_l1_mp1_m2D_d1_1_0"
+            ],
+        }
+    ]
+}

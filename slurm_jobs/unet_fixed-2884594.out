@@ -1,0 +1,46 @@
+'Starting training'
+{'arch': 'unet_fixed',
+ 'bs': 6,
+ 'data': ['/home/schaudhary/whole-brain_DeepDenoising/data/synthetic_data/signal_5'],
+ 'depth': 1,
+ 'epochs': 30,
+ 'loss': 'l1',
+ 'lr': 0.001,
+ 'max_proj': 1,
+ 'mode': '2D',
+ 'out': '/home/schaudhary/whole-brain_DeepDenoising/test_runs',
+ 'run': 1,
+ 'tsize': 0}
+epoch: 0, Train Loss: 0.06108272075653076, Test Loss: 0.05777241662144661
+epoch: 1, Train Loss: 0.0524931363761425, Test Loss: 0.054354310035705566
+epoch: 2, Train Loss: 0.05081159621477127, Test Loss: 0.04884261637926102
+epoch: 3, Train Loss: 0.05318767949938774, Test Loss: 0.052533138543367386
+epoch: 4, Train Loss: 0.047837693244218826, Test Loss: 0.04591813683509827
+epoch: 5, Train Loss: 0.04416269809007645, Test Loss: 0.04342222958803177
+epoch: 6, Train Loss: 0.042200736701488495, Test Loss: 0.04330703616142273
+epoch: 7, Train Loss: 0.04182162135839462, Test Loss: 0.039147697389125824
+epoch: 8, Train Loss: 0.04425434023141861, Test Loss: 0.04404141381382942
+epoch: 9, Train Loss: 0.040061116218566895, Test Loss: 0.040254417806863785
+epoch: 10, Train Loss: 0.04212893918156624, Test Loss: 0.043504320085048676
+epoch: 11, Train Loss: 0.0396333746612072, Test Loss: 0.03772621601819992
+epoch: 12, Train Loss: 0.040573202073574066, Test Loss: 0.039304833859205246
+epoch: 13, Train Loss: 0.04196372255682945, Test Loss: 0.040926508605480194
+epoch: 14, Train Loss: 0.039584092795848846, Test Loss: 0.03870087116956711
+epoch: 15, Train Loss: 0.039337266236543655, Test Loss: 0.037873245775699615
+epoch: 16, Train Loss: 0.03768531233072281, Test Loss: 0.04037836194038391
+epoch: 17, Train Loss: 0.03882689028978348, Test Loss: 0.03730056434869766
+epoch: 18, Train Loss: 0.037922512739896774, Test Loss: 0.03899425268173218
+epoch: 19, Train Loss: 0.03749963641166687, Test Loss: 0.03734905272722244
+epoch: 20, Train Loss: 0.03852264583110809, Test Loss: 0.0360686257481575
+epoch: 21, Train Loss: 0.03725181892514229, Test Loss: 0.03640412166714668
+epoch: 22, Train Loss: 0.039170410484075546, Test Loss: 0.03917699307203293
+epoch: 23, Train Loss: 0.038282476365566254, Test Loss: 0.037102025002241135
+epoch: 24, Train Loss: 0.03787333890795708, Test Loss: 0.03709620237350464
+epoch: 25, Train Loss: 0.035539496690034866, Test Loss: 0.0372806079685688
+epoch: 26, Train Loss: 0.03906600549817085, Test Loss: 0.03852474316954613
+epoch: 27, Train Loss: 0.0357963927090168, Test Loss: 0.036620307713747025
+epoch: 28, Train Loss: 0.03660733252763748, Test Loss: 0.03541814535856247
+epoch: 29, Train Loss: 0.035469699651002884, Test Loss: 0.035468123853206635
+saved model config at /home/schaudhary/whole-brain_DeepDenoising/test_runs/run_unet_fixed_l1_mp1_m2D_d1_1_0/model_config.pickle
+saved model weights at /home/schaudhary/whole-brain_DeepDenoising/test_runs/run_unet_fixed_l1_mp1_m2D_d1_1_0/model_weights.pt
+saving denoising on random test examples

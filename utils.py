@@ -3,39 +3,46 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-from cnn_archs import unet_v, unet_v2, hourglass_wores, hourglass_wres
+from cnn_archs_pytorch import unet_v, unet_v2, hourglass_wores, hourglass_wres
+
 
 def load_data(data_path, all_gt_img_data, all_noisy_data, max_proj):
-    gt_img_path = data_path + '/' + 'gt_imgs'
-    noisy_img_path = data_path + '/' + 'noisy_imgs'
+    gt_img_path = os.path.join(data_path, 'gt_imgs')
+    noisy_img_path = os.path.join(data_path, 'noisy_imgs')
 
     stack_list = os.listdir(gt_img_path)
-    stack_num = [int(stack[4:]) for stack in stack_list]
-    num_stacks = max(stack_num)
 
-    for stack in range(1, num_stacks + 1):
-        curr_img_gt = []
-        stack_path_gt = gt_img_path + '/img_' + str(stack)
-        curr_img_noisy = []
-        stack_path_noisy = noisy_img_path + '/img_' + str(stack)
+    for stack in stack_list:
+        if os.path.isfile(os.path.join(gt_img_path, stack)):
+            curr_img_gt = cv2.imread(os.path.join(gt_img_path, stack), -1)
+            curr_img_noisy = cv2.imread(os.path.join(noisy_img_path, stack), -1)
+            if len(curr_img_gt.shape) == 2:
+                curr_img_gt = np.expand_dims(curr_img_gt, 2)
+                curr_img_noisy = np.expand_dims(curr_img_noisy, 2)
+        elif os.path.isdir(os.path.join(noisy_img_path, stack)):
+            curr_img_gt = []
+            stack_path_gt = os.path.join(gt_img_path, stack)
+            curr_img_noisy = []
+            stack_path_noisy = os.path.join(noisy_img_path, stack)
 
-        zplane_list = os.listdir(stack_path_gt)
-        zplane_num = [int(zplane[2:len(zplane) - 4]) for zplane in zplane_list]
-        max_zplane_num = max(zplane_num)
-        for num in range(max_zplane_num):
-            curr_gt_z = cv2.imread(stack_path_gt + '/z_' + str(num + 1) + '.tif', -1)
-            curr_img_gt.append(curr_gt_z)
+            zplane_list = os.listdir(stack_path_gt)
+            zplane_num = [int(zplane[2:len(zplane) - 4]) for zplane in zplane_list]
+            max_zplane_num = max(zplane_num)
+            for num in range(max_zplane_num):
+                curr_gt_z = cv2.imread(os.path.join(stack_path_gt, f'z_{num + 1}.tif'), -1)
+                curr_img_gt.append(curr_gt_z)
 
-            curr_noisy_z = cv2.imread(stack_path_noisy + '/z_' + str(num + 1) + '.tif', -1)
-            curr_img_noisy.append(curr_noisy_z)
+                curr_noisy_z = cv2.imread(os.path.join(stack_path_noisy, f'z_{num + 1}.tif'), -1)
+                curr_img_noisy.append(curr_noisy_z)
 
-        curr_img_gt = np.array(curr_img_gt)
-        curr_img_noisy = np.array(curr_img_noisy)
-        curr_img_gt = np.transpose(curr_img_gt, axes=(1, 2, 0))
-        curr_img_noisy = np.transpose(curr_img_noisy, axes=(1, 2, 0))
-        if max_proj == 1:
-            curr_img_gt = np.amax(curr_img_gt, axis=2, keepdims=True)
-            curr_img_noisy = np.amax(curr_img_noisy, axis=2, keepdims=True)
+            curr_img_gt = np.array(curr_img_gt)
+            curr_img_noisy = np.array(curr_img_noisy)
+            curr_img_gt = np.transpose(curr_img_gt, axes=(1, 2, 0))
+            curr_img_noisy = np.transpose(curr_img_noisy, axes=(1, 2, 0))
+            if max_proj == 1:
+                curr_img_gt = np.amax(curr_img_gt, axis=2, keepdims=True)
+                curr_img_noisy = np.amax(curr_img_noisy, axis=2, keepdims=True)
+
         all_gt_img_data.append(curr_img_gt)
         all_noisy_data.append(curr_img_noisy)
 
@@ -75,10 +82,7 @@ def prepare_training_data(all_gt_img_data, all_noisy_img_data, depth, mode):
     for n in range(len(all_gt_img_data)):
         curr_gt_img = all_gt_img_data[n]
         curr_noisy_img = all_noisy_img_data[n]
-        if mode == '3D':
-            depth_gt_img = get_depth_chunks_from_stack(curr_gt_img, depth)
-        else:
-            depth_gt_img = get_depth_chunks_from_stack(curr_gt_img, 1)
+        depth_gt_img = get_depth_chunks_from_stack(curr_gt_img, depth)
         depth_noisy_img = get_depth_chunks_from_stack(curr_noisy_img, depth)
         train_gt_img_data.extend(depth_gt_img)
         train_noisy_img_data.extend(depth_noisy_img)
@@ -153,11 +157,16 @@ def split_train_test(X, Y, split_ratio):
 
 
 def get_cnn_arch_from_argin(name):
-    arch_dic = {'unet_fixed': unet_v,
-                'unet': unet_v2,
-                'unet_v': unet_v,
-                'unet_v2': unet_v2,
-                'hourglass_wres': hourglass_wres,
-                'hourglass_wores': hourglass_wores}
+    arch_dic = {'unet_fixed': unet_v.UNet_v,
+                'unet': unet_v2.UNet_v2,
+                'hourglass_wres': hourglass_wres.Hourglass_wres,
+                'hourglass_wores': hourglass_wores.Hourglass_wores}
 
     return arch_dic[name]
+
+def pytorch_specific_manipulations(train_X, train_Y, test_X, test_Y):
+    train_X = np.transpose(train_X, (0, 3, 1, 2)).astype('int16')
+    train_Y = np.transpose(train_Y, (0, 3, 1, 2)).astype('int16')
+    test_X = np.transpose(test_X, (0, 3, 1, 2)).astype('int16')
+    test_Y = np.transpose(test_Y, (0, 3, 1, 2)).astype('int16')
+    return train_X, train_Y, test_X, test_Y
