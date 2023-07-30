@@ -60,13 +60,12 @@ def get_data(
 
 def get_model(
         model_config,
+        device,
         in_channels
 ):
     model = get_cnn_arch_from_argin(model_config.arch)(in_channels=in_channels, out_channels=32)
+    model = model.to(device)
     return model
-
-def dummy_def():
-    return 1
 
 def train_step(
         model_config,
@@ -211,9 +210,9 @@ def trainer(model_config):
     train_X, train_Y, test_X, test_Y, tsize = get_data(model_config)
 
     ## define CNN model
-    model = get_model(model_config, in_channels=train_X.shape[1])
-    optimizer = torch.optim.Adam(model.parameters(), lr=model_config.lr)
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    model = get_model(model_config, device, in_channels=train_X.shape[1])
+    optimizer = torch.optim.Adam(model.parameters(), lr=model_config.lr)
     def loss_fn(pred, y):
         if model_config.loss == 'l2':
             loss = torch.mean((y - pred)**2)

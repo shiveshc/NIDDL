@@ -1,5 +1,6 @@
 import os
 import cv2
+import tifffile
 import numpy as np
 import matplotlib.pyplot as plt
 import random
@@ -14,8 +15,10 @@ def load_data(data_path, all_gt_img_data, all_noisy_data, max_proj):
 
     for stack in stack_list:
         if os.path.isfile(os.path.join(gt_img_path, stack)):
-            curr_img_gt = cv2.imread(os.path.join(gt_img_path, stack), -1)
-            curr_img_noisy = cv2.imread(os.path.join(noisy_img_path, stack), -1)
+            curr_img_gt = tifffile.imread(os.path.join(gt_img_path, stack))
+            curr_img_noisy = tifffile.imread(os.path.join(noisy_img_path, stack))
+            # curr_img_gt = cv2.imread(os.path.join(gt_img_path, stack), -1)
+            # curr_img_noisy = cv2.imread(os.path.join(noisy_img_path, stack), -1)
             if len(curr_img_gt.shape) == 2:
                 curr_img_gt = np.expand_dims(curr_img_gt, 2)
                 curr_img_noisy = np.expand_dims(curr_img_noisy, 2)
@@ -29,10 +32,12 @@ def load_data(data_path, all_gt_img_data, all_noisy_data, max_proj):
             zplane_num = [int(zplane[2:len(zplane) - 4]) for zplane in zplane_list]
             max_zplane_num = max(zplane_num)
             for num in range(max_zplane_num):
-                curr_gt_z = cv2.imread(os.path.join(stack_path_gt, f'z_{num + 1}.tif'), -1)
+                curr_gt_z = tifffile.imread(os.path.join(stack_path_gt, f'z_{num + 1}.tif'))
+                # curr_gt_z = cv2.imread(os.path.join(stack_path_gt, f'z_{num + 1}.tif'), -1)
                 curr_img_gt.append(curr_gt_z)
 
-                curr_noisy_z = cv2.imread(os.path.join(stack_path_noisy, f'z_{num + 1}.tif'), -1)
+                curr_noisy_z = tifffile.imread(os.path.join(stack_path_noisy, f'z_{num + 1}.tif'))
+                # curr_noisy_z = cv2.imread(os.path.join(stack_path_noisy, f'z_{num + 1}.tif'), -1)
                 curr_img_noisy.append(curr_noisy_z)
 
             curr_img_gt = np.array(curr_img_gt)
@@ -165,8 +170,8 @@ def get_cnn_arch_from_argin(name):
     return arch_dic[name]
 
 def pytorch_specific_manipulations(train_X, train_Y, test_X, test_Y):
-    train_X = np.transpose(train_X, (0, 3, 1, 2)).astype('int16')
-    train_Y = np.transpose(train_Y, (0, 3, 1, 2)).astype('int16')
-    test_X = np.transpose(test_X, (0, 3, 1, 2)).astype('int16')
-    test_Y = np.transpose(test_Y, (0, 3, 1, 2)).astype('int16')
+    train_X = np.transpose(train_X, (0, 3, 1, 2))
+    train_Y = np.transpose(train_Y, (0, 3, 1, 2))
+    test_X = np.transpose(test_X, (0, 3, 1, 2))
+    test_Y = np.transpose(test_Y, (0, 3, 1, 2))
     return train_X, train_Y, test_X, test_Y

@@ -51,13 +51,14 @@ def denoise_data(
         model,
 ):
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    model = model.to(device)
 
     for d in tqdm(range(len(inference_config.data))):
         data_path = inference_config.data[d]
 
         print(f'Denoising {data_path}')
         if os.path.isdir(data_path): # data path are directories containing images
-            all_noisy_data = load_data(data_path, model_config.max_proj)
+            all_noisy_data, all_img_name = load_data(data_path, model_config.max_proj)
 
             pred_dir = os.path.join(data_path, 'pred_model')
             if os.path.isdir(pred_dir):
@@ -66,7 +67,8 @@ def denoise_data(
             file = open(os.path.join(pred_dir, 'inference_runtime.txt'), 'w')
             for i in tqdm(range(len(all_noisy_data))):
                 curr_img = all_noisy_data[i]
-                curr_img_dir = os.path.join(pred_dir, f'img_{i + 1}')
+                curr_img_name = all_img_name[i]
+                curr_img_dir = os.path.join(pred_dir, curr_img_name)
                 os.mkdir(curr_img_dir)
                 for z in range(curr_img.shape[2]):
                     input_x = make_cnn_input_data(curr_img, z, int(model_config.depth))

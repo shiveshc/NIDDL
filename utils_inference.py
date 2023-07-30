@@ -1,17 +1,20 @@
 import os
 import cv2
+import tifffile
 import numpy as np
 
 def load_data(data_path, max_proj):
     noisy_vid_path = os.path.join(data_path, 'noisy_imgs')
 
     all_noisy_data = []
+    all_img_name = []
 
     img_list = os.listdir(noisy_vid_path)
 
     for img in img_list:
         if os.path.isfile(os.path.join(noisy_vid_path, img)):
-            curr_noisy_img = cv2.imread(os.path.join(noisy_vid_path, img), -1)
+            curr_noisy_img = tifffile.imread(os.path.join(noisy_vid_path, img))
+            # curr_noisy_img = cv2.imread(os.path.join(noisy_vid_path, img), -1)
             if len(curr_noisy_img.shape) == 2:
                 curr_noisy_img = np.expand_dims(curr_noisy_img, 2)
         elif os.path.isdir(os.path.join(noisy_vid_path, img)):
@@ -20,16 +23,19 @@ def load_data(data_path, max_proj):
             num_zplanes = max(zplane_num)
             curr_noisy_img = []
             for z in range(1, num_zplanes + 1):
-                noisy_img = cv2.imread(os.path.join(noisy_vid_path, img, f'z_{z}.tif'), -1)
+                noisy_img = tifffile.imread(os.path.join(noisy_vid_path, img, f'z_{z}.tif'))
+                # noisy_img = cv2.imread(os.path.join(noisy_vid_path, img, f'z_{z}.tif'), -1)
                 curr_noisy_img.append(noisy_img)
 
             curr_noisy_img = np.array(curr_noisy_img)
             curr_noisy_img = np.transpose(curr_noisy_img, axes=(1, 2, 0))
             if max_proj == 1:
                 curr_noisy_img = np.amax(curr_noisy_img, axis=2, keepdims=True)
+        
         all_noisy_data.append(curr_noisy_img)
+        all_img_name.append(img)
 
-    return all_noisy_data
+    return all_noisy_data, all_img_name
 
 # def load_data(data_path, max_proj):
 #     noisy_vid_path = os.path.join(data_path, 'noisy_imgs')
@@ -63,10 +69,11 @@ def load_data_indiv_imgs(img, max_proj):
     all_img_path = []
 
     curr_img_path, curr_img_name = os.path.split(img)
-    curr_img = cv2.imread(img, -1)
+    curr_img = tifffile.imread(img)
+    # curr_img = cv2.imread(img, -1)
     if max_proj == 1:
         if len(curr_img.shape) == 3:
-            curr_img = np.amax(curr_img, axis= 2, keepdims= True)
+            curr_img = np.amax(curr_img, axis= 0, keepdims= True)
     all_noisy_data.append(curr_img)
     all_img_name.append(curr_img_name)
     all_img_path.append(curr_img_path)
@@ -133,5 +140,5 @@ def get_run_params(run_path):
     return base_path_run, run_name, max_proj, model_type, arch_name, depth, run, tsize
 
 def pytorch_specific_manipulations(img):
-    img = np.transpose(img, (0, 3, 1, 2)).astype('int16')
+    img = np.transpose(img, (0, 3, 1, 2))
     return img
