@@ -31,11 +31,12 @@ Installation steps tested for Linux and Python 3.9
 ### 1. Download pytorch version of whole-brain_DeepDenoising repository
 Clone pytorch branch of repository using `git clone -b pytorch https://github.com/shiveshc/whole-brain_DeepDenoising.git`.
 
-### 2. Setting up venv and installing libraries
+### 2. Setting up env and installing dependencies
 Open command line terminal as administrator and navigate to cloned repository path using `cd /whole-brain_DeepDenoising`.
 
 Next run following commands - 
 1. `conda env create -f environment.yml`
+2. `conda activate niddl-env`
 
 Installation should take ~10 minutes.
     
