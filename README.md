@@ -9,7 +9,9 @@
 
 # whole-brain_DeepDenoising
 
-__[Pytorch](https://github.com/shiveshc/whole-brain_DeepDenoising/tree/pytorch) version is available now__. Much easier to install and use (checkout `example.ipynb`).
+__[Pytorch](https://github.com/shiveshc/whole-brain_DeepDenoising/tree/pytorch) version is available now__. 
+1. Download using `git clone -b pytorch https://github.com/shiveshc/whole-brain_DeepDenoising.git`
+2. Much easier to install and use (checkout `example.ipynb`).
 
 Deep denoising pushes the limit of functional data acquisition by recovering high SNR calcium traces from low SNR videos acquired using low laser power or smaller exposure time. Thus deep denoising enables faster and longer volumetric recordings. For more details, our [paper](https://www.nature.com/articles/s41467-022-32886-w) is avalable.
 
