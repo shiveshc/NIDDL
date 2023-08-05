@@ -39,6 +39,9 @@ Next run following commands -
 2. `conda activate niddl-env`
 
 Installation should take ~10 minutes.
+
+### 3. Usage
+Follow instructions in `example.ipynb`
     
 # Additional system requirements
 Model training using GPUs is much faster and thus preferred. To be able to use GPUs, suitable NVIDIA drivers and CUDA libraries must be installed. Please make sure your CUDA versions are compatible with Pytorch 2.0.1.
