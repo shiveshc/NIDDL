@@ -140,5 +140,5 @@ def get_run_params(run_path):
     return base_path_run, run_name, max_proj, model_type, arch_name, depth, run, tsize
 
 def pytorch_specific_manipulations(img):
-    img = np.transpose(img, (0, 3, 1, 2))
+    img = np.transpose(img, (0, 3, 1, 2)).astype(float)
     return img

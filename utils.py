@@ -170,8 +170,8 @@ def get_cnn_arch_from_argin(name):
     return arch_dic[name]
 
 def pytorch_specific_manipulations(train_X, train_Y, test_X, test_Y):
-    train_X = np.transpose(train_X, (0, 3, 1, 2))
-    train_Y = np.transpose(train_Y, (0, 3, 1, 2))
-    test_X = np.transpose(test_X, (0, 3, 1, 2))
-    test_Y = np.transpose(test_Y, (0, 3, 1, 2))
+    train_X = np.transpose(train_X, (0, 3, 1, 2)).astype(float)
+    train_Y = np.transpose(train_Y, (0, 3, 1, 2)).astype(float)
+    test_X = np.transpose(test_X, (0, 3, 1, 2)).astype(float)
+    test_Y = np.transpose(test_Y, (0, 3, 1, 2)).astype(float)
     return train_X, train_Y, test_X, test_Y
