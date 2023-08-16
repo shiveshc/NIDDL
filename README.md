@@ -7,9 +7,9 @@
 <!-- ![GitHub all releases](https://img.shields.io/github/downloads/shiveshc/whole-brain_DeepDenoising/total) -->
 
 
-# whole-brain_DeepDenoising
+# NIDDL - Neuro Imaging Denoising Via Deep Learning
 (***)  
-__![Image](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white) version is available [here] (https://github.com/shiveshc/whole-brain_DeepDenoising/tree/pytorch) now__. 
+__![Image](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white) version is available [here](https://github.com/shiveshc/whole-brain_DeepDenoising/tree/pytorch) now__. 
 1. Download using `git clone -b pytorch https://github.com/shiveshc/whole-brain_DeepDenoising.git`
 2. Much easier to install and use (checkout `example.ipynb`).
 
