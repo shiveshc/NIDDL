@@ -1,10 +1,10 @@
-![GitHub repo size](https://img.shields.io/github/repo-size/shiveshc/whole-brain_DeepDenoising)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/shiveshc/whole-brain_DeepDenoising)
+![GitHub repo size](https://img.shields.io/github/repo-size/shiveshc/NIDDL)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/shiveshc/NIDDL)
 ![Python version](https://img.shields.io/badge/python-v3.5-blue)
-![visitors](https://visitor-badge.glitch.me/badge?page_id=shiveshc.whole-brain_DeepDenoising&left_color=green&right_color=red)
-![GitHub](https://img.shields.io/github/license/shiveshc/whole-brain_DeepDenoising)
+![visitors](https://visitor-badge.glitch.me/badge?page_id=shiveshc.NIDDL&left_color=green&right_color=red)
+![GitHub](https://img.shields.io/github/license/shiveshc/NIDDL)
 ![Suggestions](https://img.shields.io/badge/suggestions-welcome-green)
-<!-- ![GitHub all releases](https://img.shields.io/github/downloads/shiveshc/whole-brain_DeepDenoising/total) -->
+<!-- ![GitHub all releases](https://img.shields.io/github/downloads/shiveshc/NIDDL/total) -->
 ![Image](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
 
 
@@ -34,11 +34,11 @@ Chaudhary, S., Moon, S. & Lu, H. Fast, efficient, and accurate neuro-imaging den
 # Installation
 Installation steps tested for Linux and Python 3.9
 
-### 1. Download pytorch version of whole-brain_DeepDenoising repository
-Clone pytorch branch of repository using `git clone -b pytorch https://github.com/shiveshc/whole-brain_DeepDenoising.git`.
+### 1. Download pytorch version of NIDDL repository
+Clone pytorch branch of repository using `git clone -b pytorch https://github.com/shiveshc/NIDDL.git`.
 
 ### 2. Setting up env and installing dependencies
-Open command line terminal as administrator and navigate to cloned repository path using `cd /whole-brain_DeepDenoising`.
+Open command line terminal as administrator and navigate to cloned repository path using `cd /NIDDL`.
 
 Next run following commands - 
 1. `conda env create -f environment.yml`
