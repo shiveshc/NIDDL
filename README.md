@@ -5,6 +5,7 @@
 ![GitHub](https://img.shields.io/github/license/shiveshc/whole-brain_DeepDenoising)
 ![Suggestions](https://img.shields.io/badge/suggestions-welcome-green)
 <!-- ![GitHub all releases](https://img.shields.io/github/downloads/shiveshc/whole-brain_DeepDenoising/total) -->
+[Image](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
 
 
 # NIDDL - Neuro Imaging Denoising Via Deep Learning
