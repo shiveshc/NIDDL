@@ -47,7 +47,7 @@ Next run following commands -
 Installation should take ~10 minutes.
 
 ### 3. Usage
-1. Create jupyter kernel in niddl-env
+1. Create jupyter kernel in `niddl-env` using `jupyter notebook`
 2. Follow instructions in `example.ipynb`
     
 # Additional system requirements
