@@ -1,16 +1,16 @@
-![GitHub repo size](https://img.shields.io/github/repo-size/shiveshc/whole-brain_DeepDenoising)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/shiveshc/whole-brain_DeepDenoising)
+![GitHub repo size](https://img.shields.io/github/repo-size/shiveshc/NIDDL)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/shiveshc/NIDDL)
 ![Python version](https://img.shields.io/badge/python-v3.5-blue)
-![visitors](https://visitor-badge.glitch.me/badge?page_id=shiveshc.whole-brain_DeepDenoising&left_color=green&right_color=red)
-![GitHub](https://img.shields.io/github/license/shiveshc/whole-brain_DeepDenoising)
+![visitors](https://visitor-badge.glitch.me/badge?page_id=shiveshc.NIDDL&left_color=green&right_color=red)
+![GitHub](https://img.shields.io/github/license/shiveshc/NIDDL)
 ![Suggestions](https://img.shields.io/badge/suggestions-welcome-green)
-<!-- ![GitHub all releases](https://img.shields.io/github/downloads/shiveshc/whole-brain_DeepDenoising/total) -->
+<!-- ![GitHub all releases](https://img.shields.io/github/downloads/shiveshc/NIDDL/total) -->
 
 
 # NIDDL - Neuro Imaging Denoising Via Deep Learning
 ***  
-__![Image](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white) version is available [here](https://github.com/shiveshc/whole-brain_DeepDenoising/tree/pytorch) now__. 
-1. Download using `git clone -b pytorch https://github.com/shiveshc/whole-brain_DeepDenoising.git`
+__![Image](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white) version is available [here](https://github.com/shiveshc/NIDDL/tree/pytorch) now__. 
+1. Download using `git clone -b pytorch https://github.com/shiveshc/NIDDL.git`
 2. Much easier to install and use (checkout `example.ipynb`).
 ***  
 
@@ -41,13 +41,13 @@ Chaudhary, S., Moon, S. & Lu, H. Fast, efficient, and accurate neuro-imaging den
 # Installation
 Installation steps tested for Windows 10 64-bit and Python 3.5
 
-### 1. Download whole-brain_DeepDenoising repository
-Open Git Bash terminal, navigate to desired location and clone repository using `git clone https://github.com/shiveshc/whole-brain_DeepDenoising.git`.
+### 1. Download NIDDL repository
+Open Git Bash terminal, navigate to desired location and clone repository using `git clone https://github.com/shiveshc/NIDDL.git`.
 
 Or click on `Code` button on top right corner and `Download ZIP`.
 
 ### 2. Setting up venv and installing libraries
-Open command line terminal as administrator and navigate to cloned repository path using `cd .\whole-brain_DeepDenoising`.
+Open command line terminal as administrator and navigate to cloned repository path using `cd .\NIDDL`.
 
 Next run following commands - 
 | Windows 10 | MacOS |
