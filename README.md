@@ -8,8 +8,8 @@
 
 
 # whole-brain_DeepDenoising
-
-__[Pytorch](https://github.com/shiveshc/whole-brain_DeepDenoising/tree/pytorch) version is available now__. 
+(***)
+__![Image](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)[Pytorch](https://github.com/shiveshc/whole-brain_DeepDenoising/tree/pytorch) version is available now__. 
 1. Download using `git clone -b pytorch https://github.com/shiveshc/whole-brain_DeepDenoising.git`
 2. Much easier to install and use (checkout `example.ipynb`).
 
