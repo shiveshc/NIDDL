@@ -16,6 +16,11 @@ __![Image](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=
 
 Deep denoising pushes the limit of functional data acquisition by recovering high SNR calcium traces from low SNR videos acquired using low laser power or smaller exposure time. Thus deep denoising enables faster and longer volumetric recordings. For more details, our [paper](https://www.nature.com/articles/s41467-022-32886-w) is avalable.
 
+If you find our work useful, please cite
+```
+Chaudhary, S., Moon, S. & Lu, H. Fast, efficient, and accurate neuro-imaging denoising via supervised deep learning. Nat Commun 13, 5165 (2022). https://doi.org/10.1038/s41467-022-32886-w
+```
+
 <p align = "center"><b>Denoise whole-brain videos</b></p>
 <img src = "extra/wb_denoising.gif" width=100% align="center">
 
