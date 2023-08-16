@@ -47,7 +47,8 @@ Next run following commands -
 Installation should take ~10 minutes.
 
 ### 3. Usage
-Follow instructions in `example.ipynb`
+1. Create jupyter kernel in niddl-env
+2. Follow instructions in `example.ipynb`
     
 # Additional system requirements
 Model training using GPUs is much faster and thus preferred. To be able to use GPUs, suitable NVIDIA drivers and CUDA libraries must be installed. Please make sure your CUDA versions are compatible with Pytorch 2.0.1.
