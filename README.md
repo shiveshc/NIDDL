@@ -52,9 +52,10 @@ Follow instructions in `example.ipynb`
 Model training using GPUs is much faster and thus preferred. To be able to use GPUs, suitable NVIDIA drivers and CUDA libraries must be installed. Please make sure your CUDA versions are compatible with Pytorch 2.0.1.
 
 # Train on new dataset
-1. Follow instructions in `example.ipynb`.
+1. Create jupyter kernel within `niddl-env`.
+2. Follow instructions in `example.ipynb`.
 
-2. Structure of training data folder should be organised as below -
+3. Structure of training data folder should be organised as below -
     ```
     data
     ├───gt_imgs
