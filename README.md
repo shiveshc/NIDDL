@@ -50,9 +50,10 @@ Installation should take ~10 minutes.
 `environment.yml` has been tested on Linux. Installation on MacOS or Windows may throw errors. In this case you can try following -
 1. `cd ~/NIDDL`
 2. `conda create -n niddl-env python=3.9`
-3. `pip install ipykernel`
-4. `jupyter notebook`
-3. Run 1st cell in `example.ipynb`, manually install required libraries using `pip install <lib>`
+3. `conda activate niddl-env`
+4. `pip install ipykernel`
+5. `jupyter notebook`
+6. Run 1st cell in `example.ipynb`, manually install required libraries using `pip install <lib>`
 
 ### 3. Usage
 1. Create jupyter kernel in `niddl-env` using `jupyter notebook`
