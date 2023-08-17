@@ -38,13 +38,21 @@ Installation steps tested for Linux and Python 3.9
 Clone pytorch branch of repository using `git clone -b pytorch https://github.com/shiveshc/NIDDL.git`.
 
 ### 2. Setting up env and installing dependencies
-Open command line terminal as administrator and navigate to cloned repository path using `cd /NIDDL`.
+Open command line terminal as administrator and navigate to cloned repository path using `cd ~/NIDDL`.
 
 Next run following commands - 
 1. `conda env create -f environment.yml`
 2. `conda activate niddl-env`
 
 Installation should take ~10 minutes.
+
+#### Troubleshooting
+`environment.yml` has been tested on Linux. Installation on MacOS or Windows may throw errors. In this case you can try following -
+1. `cd ~/NIDDL`
+2. `conda create -n niddl-env python=3.9
+3. `pip install ipykernel`
+4. `jupyter notebook`
+3. Run 1st cell in `example.ipynb`, manually install required libraries using `pip install <lib>`
 
 ### 3. Usage
 1. Create jupyter kernel in `niddl-env` using `jupyter notebook`
