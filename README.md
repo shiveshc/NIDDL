@@ -9,9 +9,10 @@
 
 # NIDDL - Neuro Imaging Denoising Via Deep Learning
 ***  
-__![Image](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white) version is available [here](https://github.com/shiveshc/NIDDL/tree/pytorch) now__. 
+__![Image](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white) version is available [here](https://github.com/shiveshc/NIDDL/tree/pytorch) now with Napari denoiser__. 
 1. Download using `git clone -b pytorch https://github.com/shiveshc/NIDDL.git`
 2. Much easier to install and use (checkout `example.ipynb`).
+3. Denoise in Napari by running `napari_niddl.py`
 ***  
 
 Deep denoising pushes the limit of functional data acquisition by recovering high SNR calcium traces from low SNR videos acquired using low laser power or smaller exposure time. Thus deep denoising enables faster and longer volumetric recordings. For more details, our [paper](https://www.nature.com/articles/s41467-022-32886-w) is avalable.
