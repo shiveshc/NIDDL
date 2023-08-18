@@ -48,6 +48,10 @@ Installation should take ~10 minutes.
 
 #### Troubleshooting
 `environment.yml` has been tested on Linux. Installation on MacOS or Windows may throw errors. In this case you can try following -
+1. Try using `environment_macos.yml` for macos.
+
+Or
+
 1. `cd ~/NIDDL`
 2. `conda create -n niddl-env python=3.9`
 3. `conda activate niddl-env`
@@ -56,6 +60,17 @@ Installation should take ~10 minutes.
 6. Run 1st cell in `example.ipynb`, manually install required libraries using `pip install <lib>`
 
 ### 3. Usage
+#### Napari
+Try denoising in Napari
+1. `cd ~/NIDDL`
+2. `conda activate niddl-env`
+3. `python napari_niddl.py`
+4. Denoise NIDDL widget should be visible in napari viewer
+5. Set `noisy_img_path` image and corresponding high SNR `gt_image_path` (optional) in the widget.
+6. Set `DataType` approprately (corresponding models will be used to denoise images)
+7. Click `Denoise`
+
+#### Notebook
 1. Create jupyter kernel in `niddl-env` using `jupyter notebook`
 2. Follow instructions in `example.ipynb`
     
