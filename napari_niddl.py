@@ -16,9 +16,11 @@ def get_denoised_img_path(noisy_img_path):
     return denoised_img_path
 
 
-def denoise(noisy_img_path, datatype):
-
-    if datatype == 'Synthetic':
+def denoise(noisy_img_path, datatype, run_path):
+    print('printing run path')
+    print(run_path)
+    if os.path.isdir(str(run_path)) == False or str(run_path) == '' or str(run_path) == '.':
+        show_info('No run path selected. Denoising using default models')
         run_path = 'test_runs/run_hourglass_wres_l1_mp1_m2D_d1_1_0'
 
     inference_config = {'data': [noisy_img_path], 'run': run_path}
@@ -39,12 +41,14 @@ def denoise(noisy_img_path, datatype):
     datatype={"name": "DataType", "choices": ['WholeBrain', 'VentralCord', 'Neurite', 'Synthetic']},
     noisy_img_path = dict(widget_type='FileEdit', label='noisy_img: ', tooltip='select noisy image'),
     gt_img_path = dict(widget_type='FileEdit', label='gt_img: ', tooltip='select gt image'),
+    run_path = dict(widget_type='FileEdit', label='run path: ', tooltip='select trained model run folder', mode='d'),
     load_image  = dict(widget_type='PushButton', text='Load Images', tooltip='load noisy and gt images'),
 )
 def NIDDL_widget(
     datatype,
     noisy_img_path,
     gt_img_path,
+    run_path,
     load_image
 ):
     viewer = napari.current_viewer()
@@ -52,7 +56,7 @@ def NIDDL_widget(
     if noisy_img_path == '' or noisy_img_path == '.':
         show_info('Please Load Images')
     else:
-        denoised_img = denoise(noisy_img_path, datatype)
+        denoised_img = denoise(noisy_img_path, datatype, run_path)
         viewer.add_image(denoised_img, name='denoised_img')
 
 
