@@ -13,7 +13,7 @@ def parse_argument(arg_list):
     parser = argparse.ArgumentParser(prog='train.py', description= 'train CNN model to denoise volumetric functional recordings')
     parser.add_argument('data', help= 'training data path')
     parser.add_argument('run', type=int, help='run number to distinguish different runs')
-    parser.add_argument('max_proj', choices= [1, 0], help= '1 if train network on max projection of 3D stacks else 0', default= 0)
+    parser.add_argument('max_proj', type=int, choices= [1, 0], help= '1 if train network on max projection of 3D stacks else 0', default= 0)
     parser.add_argument('-out', help= 'location for saving results')
     parser.add_argument('-arch', choices=['unet',
                                          'unet_fixed',
