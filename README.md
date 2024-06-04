@@ -11,6 +11,10 @@
 # NIDDL - Neuro Imaging Denoising Via Deep Learning
 Deep denoising pushes the limit of functional data acquisition by recovering high SNR calcium traces from low SNR videos acquired using low laser power or smaller exposure time. Thus deep denoising enables faster and longer volumetric recordings. For more details, please check our [paper](https://www.nature.com/articles/s41467-022-32886-w).
 
+1. Download using `git clone -b pytorch https://github.com/shiveshc/NIDDL.git`
+2. Much easier to install and use (checkout `example.ipynb`).
+3. Denoise in Napari by running `napari_niddl.py`
+
 If you find our work useful, please cite
 ```
 Chaudhary, S., Moon, S. & Lu, H. Fast, efficient, and accurate neuro-imaging denoising via supervised deep learning. Nat Commun 13, 5165 (2022). https://doi.org/10.1038/s41467-022-32886-w
